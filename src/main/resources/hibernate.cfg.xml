@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!--ENTRY 3;-->
+<!-- ENTRY 3: HIBERNATE CONFIGURATION
+    1.  The line code above is standard for every Hibernate configuration file (hibernate.cfg.xml) You can just search
+        with google hibernate cfg xml and they will lead to GitHub pages consist various hibernate config file for
+        various purposes ALL STARTED WITH THOSE LINE OF CODES ABOVE THIS NOTE
+    2.  We begin by adding <hibernate-configuration> tag to denotes that this is a hibernate configuration
+    3.  Then we add <session-factory> tag to configure session factory that needs specific language use. In this case
+        we use SQL but the SQL we use follows certain SQL dialect specific hibernate to manage H2 database
+    4.  Therefore we set property tag for SQL dialect and set the value to hibernate for H2 database
+    5.  we set the second level cache to be disabled
+    6.  We set that every executed SQL code should be echo (showed)
+    7.  Set the naming strategy using hash code
+    8.  When using the H2 database make sure to update and maintain not drop and create new one each time it runs
+    NOTE: Since this time we use the remote server database it is normal that the hibernate config file is different
+        than the one we had in Hibernate contactmgr. On thing is we do not need to make data directory on local project
+        structure and specified them in the config file.
+    NOTE: As for the url it will be configurated in app.properties file
+        However, before we get to app.properties we need to make another config in Java side. This is will not be the
+        last config in Java side thus we need to make specific package on it called config
+    NEXT: ENTRY 4: DATA CONFIGURATION- SET OF PRE REQUISITE STEPS:
+        1.  Create new package under com.mooracle.giflibh2 name it config
+        2.  Create new Java class file inside config package and name it DataConfig.java
+        3.  Create new file inside the resources directory and name it (MANDATORY) app.properties
+    GOTO: DataConfig.java for ENTRY 4-->
+
+<!--3-2-->
+<hibernate-configuration>
+    <!--3-3-->
+    <session-factory>
+        <!--3-4 SQL Dialect Setting-->
+        <property name="dialect">org.hibernate.dialect.H2Dialect</property>
+        <!--3-5 Level Cache setting-->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+        <!--3-6 SQL echo-->
+        <property name="show_sql">true</property>
+        <!--3-7 Naming Strategy-->
+        <property name="hibernate.implicit_naming_strategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl</property>
+        <!--3-8 hbm2ddl-->
+        <property name="hbm2ddl.auto">update</property>
+
+    </session-factory>
+
+</hibernate-configuration>

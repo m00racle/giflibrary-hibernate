@@ -1,0 +1,30 @@
+package com.mooracle.giflibh2.web;
+
+public enum Color {
+    /** THIS IS COLOR ENUM
+     * associated to Category.java class for styling in Thymeleaf and CSS*/
+
+    //This is the color with their hexadecimal codes:
+    AQUA("Aqua","#59b3b3"),
+    BLUE("Blue","#5976b3"),
+    PURPLE("Purple","#7e59b3"),
+    FUCHSIA("Fucshia","#b35986"),
+    ORANGE("Orange","#b36859"),
+    GOLD("Gold","#b38f59");
+
+    private final String name;
+    private final String hexCode;
+
+    Color(String name, String hexCode) {
+        this.name = name;
+        this.hexCode = hexCode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getHexCode() {
+        return hexCode;
+    }
+}
