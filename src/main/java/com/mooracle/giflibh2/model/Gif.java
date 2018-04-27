@@ -1,7 +1,5 @@
 package com.mooracle.giflibh2.model;
 
-
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

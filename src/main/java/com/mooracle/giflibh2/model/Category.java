@@ -1,11 +1,10 @@
 package com.mooracle.giflibh2.model;
 
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 9; ENTRY 11
+//ENTRY 9; ENTRY 11; ENTRY 13
 /** ENTRY 9: CREATING CATEGORY POJO MODEL
  *  1.  This is where we model what a category should looks like in terms of attributes and behavior as a POJO
  *  2.  The user will create their own category and also use it to filter the submitted gif images
@@ -59,7 +58,7 @@ import java.util.List;
  *      WARNING: MAKE SURE THE PATH IN THE REMOTE SERVER IS CORRECT JUST COPY PASTE THE PATH HERE:
  *      jdbc:h2:tcp://localhost/~/IdeaProjects/giflibrary-hibernate/data/giflibh2
  *      At first the table will be empty but it is about to change WE NEED TO boot run from Spring Gradle plugin!
- *
+ *  TODO MOO NEXT: Fetching Data with Hibernate in Spring
  *  */
 
 @Entity
@@ -72,7 +71,7 @@ public class Category {
     private String name;
     private String colorCode;
 
-    //11-7:
+    //11-7: 13-2
     @OneToMany(mappedBy = "category")
     private List<Gif> gifs = new ArrayList<>();
 
