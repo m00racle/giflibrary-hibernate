@@ -1,10 +1,12 @@
 package com.mooracle.giflibh2.model;
 
-//ENTRY 10;
 
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+//ENTRY 10; ENTRY 12
 /** ENTRY 10: CREATING A GIF POJO MODEL
  *  1.  HERE we will mode a Gif POJO which all fields are included from those field there are some fields that need
  *      some additional note such as:
@@ -27,14 +29,37 @@ import java.time.temporal.ChronoUnit;
  *          c.  the fastest way to do this is by re-typing the object name (in this case fortunatelt the object class
  *              name between teamtreehouse and mooracle is similar)
  *  MOO: CHECK THE DATABASE SERVER FROM TERMININAL IT IS WORKING THE CONNECTION IS ALIVE!
- *  TODO MOO: FOLLOW THE COURSE FROM INITIAL COMMIT ONCE AGAIN
+ *  NEXT: ENTRY 11: ADD JPA ANNOTATIONS
+ *  GOTO: Category.java for ENTRY 11
+ *
+ *  ENTRY 12: ADD JPA ANNOTATION TO GIF
+ *  --> we wanto to add @ManyToOne on the Category field here as opposed to Category.java
+ *  1.  Here we need to add @Entity in the Class Gif
+ *  2.  Then we add @Id in the id field as primary key.
+ *  3.  Then we also add @GeneratedValue with  strategy = Generation.Type. IDENTITY
+ *  4.  Now this is IMPORTANT on the bytes field we are going to use the @Lob (learn more) which allows us to stor the
+ *      GIF image file data into the database using the database provider's implementation of a large object (which
+ *      exactly what Lob or Larger Object stands for).
+ *  NEXT: ENTRY 13: FINISHING ADD JPA ANNOTATION FOR CATEGORY
+ *  GOTO: Category.java
+ *
  * */
 
+//12-1:
+@Entity
 public class Gif {
-    //10-2: list of all fields related to the Gif POJO
+    //10-2: list of all fields related to the Gif POJO; 12-2;12-3
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //12-4:
+    @Lob
     private byte[] bytes;
     private String description;
+
+    //12-->
+    @ManyToOne
     private Category category;
     private LocalDateTime dateUpLoaded = LocalDateTime.now();
     private String username = "You";

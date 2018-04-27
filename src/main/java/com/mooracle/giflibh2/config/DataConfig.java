@@ -23,6 +23,7 @@ import javax.sql.DataSource;
  *      up during boot
  *  4.  Next we create our first @Bean (use this annotation for making Spring beans) to set Session Factory
  *      WARNING: ALL BEANS METHODS MUST BE PUBLIC!!!
+ *      WARNING: make sure to choose LocalSessionFactoryBean object froma package hibernate5!
  *  5.  Create resource object to class path variable hibernate.cfg.xml. We can just mention the name without full
  *      path to the cfg.xml file since Spring and Hibernate will know where to looks since the naming and placing
  *      of the hibernate.cfg.xml is SPECIFIED MANDATORY
@@ -57,6 +58,9 @@ import javax.sql.DataSource;
  *  6.  Then we call the properties set in the app.properties file and set each property into corresponding
  *      property in the app.properties file. Make sure to use env object we created in the field earlier to
  *      connect to each property listed in the app.properties file.
+ *      NOTE: basically this is the same input we use when we set Hibernate in basic course. There are Driver, URL,
+ *          but in this case since we will access a remote server database we will have to supply username and
+ *          password to enter.
  *      In the end there is only one properties left untouch inside the app.properties file which is the hash salt
  * NEXT: ENTRY 7: APPLICATION CONFIGURATION AND SALT
  * PRE-REQ:

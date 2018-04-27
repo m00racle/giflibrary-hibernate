@@ -23,6 +23,8 @@ version '1.0-SNAPSHOT'
  *          - The local database that stays even after you kill the app.
  *          - Single file database than can be stored locally so that you don't have to start a database server
  *          - Full server based database which require us to start a database server (this is what we want to learn)
+ *      WARNING: WHEN YOU COPY PASTE H2 PACKAGE FROM MAVEN IT'S DEFAULT SETTING IS FOR TEST COMPILE YOU NEED TO CHANGE
+ *              IT FIRST TO COMPILE!!
  *  7.  Finally when this is all ready we need to build the Spring framework plugin. Chances are it needs to be built
  *      in the latest version manners (see giflibrary project for reference)
  *      for further reference on Spring Gradle plugin: https://plugins.gradle.org/plugin/org.springframework.boot
@@ -72,5 +74,5 @@ dependencies {
     compile group: 'org.apache.tomcat', name: 'tomcat-dbcp', version: '8.5.20'
 
     // 1-6: https://mvnrepository.com/artifact/com.h2database/h2
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.196'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.196'
 }
