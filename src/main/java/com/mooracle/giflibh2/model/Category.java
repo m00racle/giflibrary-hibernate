@@ -58,7 +58,8 @@ import java.util.List;
  *      WARNING: MAKE SURE THE PATH IN THE REMOTE SERVER IS CORRECT JUST COPY PASTE THE PATH HERE:
  *      jdbc:h2:tcp://localhost/~/IdeaProjects/giflibrary-hibernate/data/giflibh2
  *      At first the table will be empty but it is about to change WE NEED TO boot run from Spring Gradle plugin!
- *  TODO MOO NEXT: Fetching Data with Hibernate in Spring
+ *  NEXT: ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
+ *  GOTO: CategoryController.java for ENTRY 14
  *  */
 
 @Entity
