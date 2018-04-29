@@ -27,7 +27,13 @@ import java.util.List;
  *  3.  WARNING: for Spring to picks up this class as an autowireable implementation of the CategoryDao, we add
  *      the @Repository up top to this class. Since it was for DAO it has @Repository and for Service @Service
  *      NOTE: we will always annotate the implementation and not the interface as a Spring component.
- *  TODO MOO NEXT: ENTRY 17 ADDING SERVICES
+ *  NEXT: ENTRY 17 ADDING SERVICES
+ *  PRE-REQ:
+ *  1.  make new package indicating service layer. We make it under the com,mooracle.giflibh2 package and name it
+ *      service.
+ *  2.  inside the service package create new interface name it CategoryService
+ *  3.  inside the service package creaete new class name it CategoryServiceImpl and implements CategoryService
+ *  GOTO: CategoryService.java for ENTRY 17
  *  */
 
 //16-3:
