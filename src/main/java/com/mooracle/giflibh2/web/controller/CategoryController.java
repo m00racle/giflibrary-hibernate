@@ -44,7 +44,14 @@ import java.util.List;
  *  7.  Insert new category: INSERT INTO CATEGORY (NAME, COLORCODE) VALUES ('Technology', '#59b3b3')
  *  8.  Then we refresh the web browser to see that new category was added named Technology with corresponding color as
  *      specified.
- *  TODO MOO: WE GO TO THE NEXT STAGE OF THE COURSE LATER
+ *  NEXT: ENTRY 15: BUILDING DAO LAYER
+ *  PRE-REQ:
+ *      1.  We will create a new package under the com.mooracle.giflibh2 package and name it dao.
+ *      2.  We create a New Java class inside the dao package, name it CategoryDao and choose option as Interface
+ *      3.  We make new Java Class inside the DAO package and name it CategoryDaoImpl and we will say this one
+ *          implements the CategoryDao in the CategoryDaoImpl class declaration.
+ *  GOTO: CategoryDao.java interface fo ENTRY 15!
+ *
  *      */
 @Controller
 public class CategoryController {
