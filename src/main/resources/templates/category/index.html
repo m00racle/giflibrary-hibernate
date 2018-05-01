@@ -1,4 +1,21 @@
 <!DOCTYPE html>
+<!-- ENTRY 20: TESTING OUR SERVICE AND DAO
+        1.  However, even if the latest addition of Category is listed in the web page after refresh the color
+            remains the same. This is merely because of the HTML and CSS are coded.
+        2.  For this particular piece the color is specified in the Thymeleaf template. And just so that we don’t go
+            too far in this course before interacting with our Thymeleaf views, let’s open that now to prove that we
+            can make noticeable changes.
+        3.  We’ll find the <div class=”card” style = “background-color:#59b3b3”> this is a bad practice actually from
+            front-end developers point of view but hey we got Spring and Thymeleaf to make it dynamic style (remember
+            the th?)
+        4.  We change it from static into dynamic by converting into :
+            <div class=”card” th: style = “|background-color:cat.colorCode||”>.
+            The | …. | is called pipe symbols used to trigger concatenation.
+            NOTE: the Category class POJO has colorCode field with its getter and setter. Thus since it is POJO
+            Thymeleaf understand that it is to call cat.getColorCode();
+
+-->
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('categories')"></head>
 <body>
@@ -17,7 +34,8 @@
         <div class="divider"></div>
         <div class="row">
             <div th:each="cat : ${categories}" class="col s12 l4">
-                <div class="card" style="background-color:#59b3b3">
+                <!-- 20-4; -->
+                <div class="card" th:style="|background-color:${cat.colorCode}|">
                     <div class="card-content">
                         <div class="card-title">
                             <a class="name" th:href="@{|/categories/${cat.id}|}" th:text="${cat.name}">Category Name</a>

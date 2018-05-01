@@ -63,7 +63,8 @@ import java.util.List;
  *      categoryService.
  *  3.  Then we can use that categoryService to fetch the list of category objects in our ListCategory method. We’ll
  *      code categoryService.findAll and that closes the gap for us.
- *  TODO MOO NEXT: TESTING OUR SERVICE AND DAO
+ *  NEXT: ENTRY 20: TESTING OUR SERVICE AND DAO
+ *  GOTO: templates/category/index.html for ENTRY 20 FOR LITTLE MODIFICATION
  *  */
 @Controller
 public class CategoryController {
