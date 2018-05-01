@@ -1,6 +1,7 @@
 package com.mooracle.giflibh2.web.controller;
 
 import com.mooracle.giflibh2.model.Category;
+import com.mooracle.giflibh2.service.CategoryService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,25 +53,41 @@ import java.util.List;
  *          implements the CategoryDao in the CategoryDaoImpl class declaration.
  *  GOTO: CategoryDao.java interface fo ENTRY 15!
  *
- *      */
+ *  ENTRY 19: MAKING SERVICE CALLS FROM A CONTROLLER
+ *  1.  First we need to remove all Hibernate related code since our DAO layer handles all of that:
+ *      a.  We won’t need to @Autowired a sessionFactory here
+ *      b.  We won’t need to open a session factory
+ *      c.  We won’t need the criteria object
+ *  2.  The controller is going to connect to the service layer not to the DAO layer or in the previous case directly
+ *      to Hibernate. We need to @Autowired to that service layer specifically to the CategoryService, we name it
+ *      categoryService.
+ *  3.  Then we can use that categoryService to fetch the list of category objects in our ListCategory method. We’ll
+ *      code categoryService.findAll and that closes the gap for us.
+ *  TODO MOO NEXT: TESTING OUR SERVICE AND DAO
+ *  */
 @Controller
 public class CategoryController {
-    //14-2:
+    //14-2: 19-2;
     @Autowired
-    private SessionFactory sessionFactory;
+    /*private SessionFactory sessionFactory;<--19-1a: deleted**/
+    CategoryService categoryService;
 
     // Index of all categories
     @RequestMapping("/categories")
     public String listCategories(Model model) {
 
-        //14-4;
-        Session session = sessionFactory.openSession();
+        //14-4; 19-3;
+        /*Session session = sessionFactory.openSession();<-- 19-1b: deleted*/
         //14-5 NOTE: THIS IS THE NEW WAY OF DOING THINGS!;
+
+        /*19-1c: all codes below are deleted
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Category> categoryCriteriaQuery = criteriaBuilder.createQuery(Category.class);
         Root<Category> categoryRoot = categoryCriteriaQuery.from(Category.class);
         categoryCriteriaQuery.select(categoryRoot);
-        List<Category> categories = session.createQuery(categoryCriteriaQuery).getResultList();
+        List<Category> categories = session.createQuery(categoryCriteriaQuery).getResultList();*/
+
+        List<Category> categories = categoryService.findAll();
 
         model.addAttribute("categories",categories);
         return "category/index";

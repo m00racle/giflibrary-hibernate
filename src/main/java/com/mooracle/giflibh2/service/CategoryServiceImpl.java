@@ -23,7 +23,8 @@ import java.util.List;
  *      be autowired as a CategoryService elsewhere, which we will need it in our controller.
  *      WARNING: these annotations @Repository and @Service are Spring components and were attached to the
  *      implementation classes not the interfaces.
- *  TODO MOO NEXT: ENTRY 19: MAKING SERVICE CALLS FROM A CONTROLLER
+ *  NEXT: ENTRY 19: MAKING SERVICE CALLS FROM A CONTROLLER
+ *  GOTO: CategoryController.java for ENTRY 19
  *  */
 
 //18-4;
