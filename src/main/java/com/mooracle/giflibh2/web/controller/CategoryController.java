@@ -17,7 +17,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14;
+//ENTRY 14; ENTRY 19; ENTRY 23;
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -65,7 +65,24 @@ import java.util.List;
  *      code categoryService.findAll and that closes the gap for us.
  *  NEXT: ENTRY 20: TESTING OUR SERVICE AND DAO
  *  GOTO: templates/category/index.html for ENTRY 20 FOR LITTLE MODIFICATION
- *  */
+ *
+ *  ENTRY 23: CONTROLLER METHOD FOR ADDING CATEGORY
+ *  1.  We’ll need to call the @Autowired CategoryService save method and pass the category object that was submitted:
+ *      categoryService.save(category);
+ *  2.  The validation of this category object passed is the subject of the next stage. As for this category variable
+ *      we also don’t have one yet since it will be assembled via a form data that is submitted which results in a call
+ *      to this controller method.
+ *  3.  Since it can be assumed that the data submitted will include all necessary fields for a Category POJO to be
+ *      constructed (all necessary field is not null), we can have Spring reassemble that form data into a Category
+ *      POJO by sticking a Category parameter in the method.
+ *  4.  After the POST-ed Category POJO is saved we want to redirect back to the /category/index view.
+ *      Here is our implementation of the POST redirect GET pattern:
+ *      a.  We will redirect to /categories as URI in the return section of the POST method: “redirect:/categories”;
+ *      b.  When Spring sees a view name beginning with redirect: , it will send a 302 response code along with the
+ *          location header to /categories.
+ *      NOTE: whatever you specify after the colon redirect: is what the browser will redirect to and not the name of a
+ *          view to render.
+ *  TODO MOO NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY*/
 @Controller
 public class CategoryController {
     //14-2: 19-2;
@@ -129,13 +146,13 @@ public class CategoryController {
         return null;
     }
 
-    // Add a category
+    // Add a category; 23-3;
     @RequestMapping(value = "/categories", method = RequestMethod.POST)
-    public String addCategory() {
-        // TODO: Add category if valid data was received
-
-        // TODO: Redirect browser to /categories
-        return null;
+    public String addCategory(Category category) {
+        // TODO: Add category if valid data was received 23-1;
+        categoryService.save(category);
+        // TODO: Redirect browser to /categories 23-4b;
+        return "redirect:/categories";
     }
 
     // Delete an existing category

@@ -31,7 +31,8 @@ import java.util.List;
  *      CategoryServiceImpl.java class.
  *  2.  We already @Autowired categoryDao thus in this save method we just call that same save method but inside the
  *      categoryDao implementation: categoryDao.save(category);
- *  TODO MOO NEXT: ENTRY 23: CONTROLLER METHID FOR ADDING CATEGORY
+ *  ENTRY 23: CONTROLLER METHOD FOR ADDING CATEGORY
+ *  GOTO: web/controller/CategoryController.java
  *  */
 
 //18-4;
