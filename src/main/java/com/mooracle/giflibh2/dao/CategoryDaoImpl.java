@@ -11,7 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
-//ENTRY 16;
+//ENTRY 16; ENTRY 21;
 /** ENTRY 16: BUILDING DAO LAYER INTERFACE IMPLEMENTATION
  *  1.  We can use IDEA feature to add directly all methods from CategoryDao interface to CategoryDaoImpl class  because
  *      we declared that the class implements the interface. NOTE: you will see red highlight in the class declaration
@@ -34,7 +34,22 @@ import java.util.List;
  *  2.  inside the service package create new interface name it CategoryService
  *  3.  inside the service package creaete new class name it CategoryServiceImpl and implements CategoryService
  *  GOTO: CategoryService.java for ENTRY 17
- *  */
+ *
+ *  ENTRY 21: SAVING ENTITIES DAO LAYER
+ *  1.  Because our DAO interface in implementing class already have a save method, our work here focus more on adding
+ *      Hibernate code to perform (implement) those tasks.
+ *  2.  Remember on the sequence of the Hibernate code: (We already declared SessionFactory object called
+ *      sessionFactory) thus:
+ *      a.  Open a session: Session session = sessionFactory.openSession();
+ *      b.  Begin transaction : session.beginTransaction( );
+ *      c.  Saving the new Category: session.save(category);
+ *      d.  Commit the transaction: session.getTransaction( ).commit( );
+ *      e.  Close the hibernate session: session.close( );
+ *      NOTE: transactions ensure that related edits all complete before changes are confirmed or committed to the
+ *      database.
+ *  NEXT: ENTRY 22: SAVING ENTITIES SERVICE LAYER
+ *  GOTO: service/CategoryServiceImpl.java
+ *      */
 
 //16-3:
 @Repository
@@ -74,7 +89,16 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public void save(Category category) {
-
+        //21-2a:
+        Session session = sessionFactory.openSession();
+        //21-2b:
+        session.beginTransaction();
+        //-21-2c:
+        session.save(category);
+        //21-2d:
+        session.getTransaction().commit();
+        //21-2e:
+        session.close();
     }
 
     @Override

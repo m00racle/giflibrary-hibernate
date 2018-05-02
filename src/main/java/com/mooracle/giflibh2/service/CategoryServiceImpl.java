@@ -25,6 +25,13 @@ import java.util.List;
  *      implementation classes not the interfaces.
  *  NEXT: ENTRY 19: MAKING SERVICE CALLS FROM A CONTROLLER
  *  GOTO: CategoryController.java for ENTRY 19
+ *
+ *  ENTRY 22: SAVING ENTITIES SERVICE LAYER
+ *  1.  Now we just go to the service package and like the DAO package we straight to go to the
+ *      CategoryServiceImpl.java class.
+ *  2.  We already @Autowired categoryDao thus in this save method we just call that same save method but inside the
+ *      categoryDao implementation: categoryDao.save(category);
+ *  TODO MOO NEXT: ENTRY 23: CONTROLLER METHID FOR ADDING CATEGORY
  *  */
 
 //18-4;
@@ -47,7 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void save(Category category) {
-
+        //22-2;
+        categoryDao.save(category);
     }
 
     @Override
