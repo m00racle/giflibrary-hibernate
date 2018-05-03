@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26;
+//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -109,7 +110,22 @@ import java.util.List;
  *      the save action if there are indeed errors invoked.
  *  6.  Inside the if statement we will make the redirect if errors do occur which: return “redirect:/categories/add”
  *      which will take us back to the form to add new category but this time is back to empty.
- *  TODO MOO NEXT: ENTRY 27: REPOPULATING DATA WHEN VA;IDATION FAILS
+ *
+ *  ENTRY 27: RE-POPULATING DATA WHEN VALIDATION FAILS
+ *  1.  In the addCategory method, we add RedirectAttributes as parameter and name it redirectAttributes so that we can
+ *      use it to make any flash attributes added will survive exactly one redirect.
+ *  2.  Now, if we do detect errors, let’s include the category object that was submitted so that it’s available upon
+ *      redirect by adding inside the if statement: redirectAttributes.addFlashAttribute(“category”, category)
+ *      NOTE: Category object named category already be part of the addCategory method and passed from POST request
+ *  3.  Next we need to modify the method that handles the rendering of the add form which is the formNewCategory to
+ *      make it shows the category object in the flash attribute.
+ *  4.  To make sure we do not overwrite the new Category( ) to the model which already existed we will add
+ *      if(!model.containsAttribute(“category”)) then we move the model.addAttribute for category inside this
+ *      if statement.
+ *  5.  Else if there is already has model attributes named category then we won’t add another one because that mean
+ *      a user had submitted invalid data. Thus we just let it roll and do nothing.
+ *  NEXT: ENTRY 28: DISPLAYING VALIDATION MESSAGE
+ *
  *  */
 @Controller
 public class CategoryController {
@@ -152,8 +168,11 @@ public class CategoryController {
     // Form for adding a new category
     @RequestMapping("categories/add")
     public String formNewCategory(Model model) {
-        // Add model attributes needed for new form; 23-7;
-        model.addAttribute("category", new Category());
+        //27-4;
+        if(!model.containsAttribute("category")) {
+            // Add model attributes needed for new form; 23-7;
+            model.addAttribute("category", new Category());
+        }
         //23-8;
         model.addAttribute("colors", Color.values());
         return "category/form";
@@ -176,11 +195,13 @@ public class CategoryController {
         return null;
     }
 
-    // Add a category; 23-3; 26-2; 26-3;
+    // Add a category; 23-3; 26-2; 26-3; 27-1
     @RequestMapping(value = "/categories", method = RequestMethod.POST)
-    public String addCategory(@Valid Category category, BindingResult result) {
-        // TODO: Add category if valid data was received 23-1; 26-5;
+    public String addCategory(@Valid Category category, BindingResult result, RedirectAttributes redirectAttributes) {
+        // Add category if valid data was received 23-1; 26-5;
         if(result.hasErrors()){
+            //27-2;
+            redirectAttributes.addFlashAttribute("category", category);
             //26-6;
             return "redirect:/categories/add";
         }
