@@ -41,7 +41,7 @@
                 <select class="cs-select cs-skin-border" th:field="*{colorCode}">
                     <option value="" disabled="disabled">Category Color</option>
                     <!--24-6;24-7;24-8;-->
-                    <option th:each="color:${colors}" th:value="${color.hexCode}" th:text="S{color.name}" th:style="|color:${color.hexCode}"|>
+                    <option th:each="color:${colors}" th:value="${color.hexCode}" th:text="${color.name}" th:style="|color:${color.hexCode}|">
                         Aqua
                     </option>
                 </select>
