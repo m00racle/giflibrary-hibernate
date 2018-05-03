@@ -1,10 +1,13 @@
 package com.mooracle.giflibh2.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 9; ENTRY 11; ENTRY 13
+//ENTRY 9; ENTRY 11; ENTRY 13; ENTRY 25;
 /** ENTRY 9: CREATING CATEGORY POJO MODEL
  *  1.  This is where we model what a category should looks like in terms of attributes and behavior as a POJO
  *  2.  The user will create their own category and also use it to filter the submitted gif images
@@ -60,7 +63,21 @@ import java.util.List;
  *      At first the table will be empty but it is about to change WE NEED TO boot run from Spring Gradle plugin!
  *  NEXT: ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  GOTO: CategoryController.java for ENTRY 14
- *  */
+ *
+ *  ENTRY 25: CAPTURING FORM VALIDATION ERRORS ENTITY CLASS
+ *  1. Head for the name field and make a decision that the value has to be present and that its length must be between
+ *      3 to 12 characters.
+ *  2.  To do this we add @NotNull which will ensure that it’s not blank,
+ *  3.  Add also @Size(min = 3, max = 12)
+ *  4.  Next we add validation annotations for the colorCode field. The value must be a valid hexadecimal colorCode as
+ *      used in CSS.
+ *  5.  We add @NotNull to the colorCode field
+ *  6.  The we add @Pattern which we will utilize regular expression thus we add regular expression element
+ *      (regexp =”#[0-9a-fA-F]{6}“) which means it starts with # and then the value can be numeric 0 to 9 or
+ *      alphabetic range from a - f in either case repeated 6 times.
+ *  NEXT: ENTRY 26: CAPTURING FORM VALIDATION ERRORS CONTROLLER
+ *  GOTO: CategoryController.java
+ * */
 
 @Entity
 public class Category {
@@ -69,7 +86,13 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //25-2; 25-3;
+    @NotNull
+    @Size(min=3, max=12)
     private String name;
+    //25-5; 25-6;
+    @NotNull
+    @Pattern(regexp = "#[0-9a-fA-F]{6}")
     private String colorCode;
 
     //11-7: 13-2
