@@ -2,6 +2,7 @@ package com.mooracle.giflibh2.web.controller;
 
 import com.mooracle.giflibh2.model.Category;
 import com.mooracle.giflibh2.service.CategoryService;
+import com.mooracle.giflibh2.web.Color;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,16 @@ import java.util.List;
  *          location header to /categories.
  *      NOTE: whatever you specify after the colon redirect: is what the browser will redirect to and not the name of a
  *          view to render.
- *  TODO MOO NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY*/
+ *  5.  add this Model Map to the formNewCategory(Model) method. Remember not the addCategory method!
+ *  6.  This formNewCategory method is responsible for rendering the view of the new category submission page we were
+ *      looking earlier. Please also NOTE that it already passed in Model object called model.
+ *  7.  We’ll add model attributes needed for the new form: model.addAttribute(“category”, new Category( ));
+ *  8.  Add the colors to the model from the controller method in the formNewCategory method:
+ *      model.addAttribute(“colors”, Color.values()); the Color.values is a built in method in Java enum that returns
+ *      value or array of values from that enum. We just need to make sure we import the right Color enum!
+ *  NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY
+ *  GOTO: /resources/templates/category/form.html for ENTRY 24
+ *  */
 @Controller
 public class CategoryController {
     //14-2: 19-2;
@@ -124,8 +134,10 @@ public class CategoryController {
     // Form for adding a new category
     @RequestMapping("categories/add")
     public String formNewCategory(Model model) {
-        // TODO: Add model attributes needed for new form
-
+        // Add model attributes needed for new form; 23-7;
+        model.addAttribute("category", new Category());
+        //23-8;
+        model.addAttribute("colors", Color.values());
         return "category/form";
     }
 

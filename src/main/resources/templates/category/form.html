@@ -1,11 +1,28 @@
 <!DOCTYPE html>
+<!-- NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY
+    1.  We are going to add Thymeleaf attributes at <form> tag :
+        a.  The action : th:action = “@{/categories}” <- NOTE: this is Thymeleaf url expression.
+        b.  The method: method = “post” NOTE: it uses standard HTML not Thymeleaf.
+    2.  we’ll start binding a Category object to the form element using form element : th:object=”${category}”
+    3.  Now the object category already bound to the <form> tag thus we can use th field elements. Here in the <input>
+        instead of using $ sign we will use *sign <more on this> in the curly braces. I will fill it with
+        name property : th:field=”*{name}”
+    4.  For the <select> element we are going to do something similar. I will use : th:field=”*{colorCode}”  to refer to
+        Category.colorCode field.
+    5.  Tell Thymeleaf to iterate the color Enum in the second <option> element by adding this.
+        th:each="color : ${colors}" .
+    6.  We’ll need to specify the options value with th:value=”${color.hexCode}”
+    7.  For the name of the color I wanted it to be a text thus th:text=”${color:name}”
+    8.  For the style we want it to be colored as the color name in the css, thus: th:style=”|color:${color.hexCode}|”
+-->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
 <body>
 <div th:replace="layout :: nav"></div>
 <div th:replace="layout :: flash"></div>
 <div class="container">
-    <form>
+    <!--24-1; 24-2;-->
+    <form th:action="@{/categories}" method="post" th:object="${category}">
         <div class="row">
             <div class="col s12">
                 <h2>New Category</h2>
@@ -14,14 +31,19 @@
         <div class="divider"></div>
         <div class="row">
             <div class="col s12 l8">
-                <input type="text" placeholder="Category Name"/>
+                <!-- 24-3;-->
+                <input type="text" placeholder="Category Name" th:field="*{name}"/>
             </div>
         </div>
         <div class="row">
             <div class="col s12 l8">
-                <select class="cs-select cs-skin-border">
+                <!--24-4; 24-5;-->
+                <select class="cs-select cs-skin-border" th:field="*{colorCode}">
                     <option value="" disabled="disabled">Category Color</option>
-                    <option style="color:#59b3b3">Aqua</option>
+                    <!--24-6;24-7;24-8;-->
+                    <option th:each="color:${colors}" th:value="${color.hexCode}" th:text="S{color.name}" th:style="|color:${color.hexCode}"|>
+                        Aqua
+                    </option>
                 </select>
             </div>
         </div>
