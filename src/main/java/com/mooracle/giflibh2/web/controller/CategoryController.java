@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14; ENTRY 19; ENTRY 23;
+//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26;
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -92,6 +94,22 @@ import java.util.List;
  *      value or array of values from that enum. We just need to make sure we import the right Color enum!
  *  NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY
  *  GOTO: /resources/templates/category/form.html for ENTRY 24
+ *
+ *  ENTRY 26: CAPTURING FORM VALIDATION ERRORS CONTROLLER
+ *  1.  Here, we’ll focus on the addCategory method where first we’ll want it to trigger validation according to the
+ *      constraints we just added in the @Entity Category class.
+ *  2.  We add @Valid to the addCategory parameter which consist of Category object :
+ *      addCategory(@Valid Category category)
+ *  3.  Next we’ll need a way to capture the errors from this validation. The easiest way is by including the
+ *      BindingResult parameter inside the addCategory method parameters. We’ll name it result thus:
+ *      addCategory(@Valid Category category, BindingResult result)
+ *  4.  We’ll need to specify what is the alternate actions if errors are found. In this case the most logical actions
+ *      is to prevent any save action of the category and redirect back to the form.
+ *  5.  Thus to avoid the save we need to add if(result.hasErrors) before the categoryService.save(category) to prevent
+ *      the save action if there are indeed errors invoked.
+ *  6.  Inside the if statement we will make the redirect if errors do occur which: return “redirect:/categories/add”
+ *      which will take us back to the form to add new category but this time is back to empty.
+ *  TODO MOO NEXT: ENTRY 27: REPOPULATING DATA WHEN VA;IDATION FAILS
  *  */
 @Controller
 public class CategoryController {
@@ -158,10 +176,14 @@ public class CategoryController {
         return null;
     }
 
-    // Add a category; 23-3;
+    // Add a category; 23-3; 26-2; 26-3;
     @RequestMapping(value = "/categories", method = RequestMethod.POST)
-    public String addCategory(Category category) {
-        // TODO: Add category if valid data was received 23-1;
+    public String addCategory(@Valid Category category, BindingResult result) {
+        // TODO: Add category if valid data was received 23-1; 26-5;
+        if(result.hasErrors()){
+            //26-6;
+            return "redirect:/categories/add";
+        }
         categoryService.save(category);
         // TODO: Redirect browser to /categories 23-4b;
         return "redirect:/categories";

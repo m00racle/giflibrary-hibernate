@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<!-- NEXT: ENTRY 24: HTML FORM FOR ADDING CATEGORY
+<!-- ENTRY 24;-->
+<!-- ENTRY 24: HTML FORM FOR ADDING CATEGORY
     1.  We are going to add Thymeleaf attributes at <form> tag :
         a.  The action : th:action = “@{/categories}” <- NOTE: this is Thymeleaf url expression.
         b.  The method: method = “post” NOTE: it uses standard HTML not Thymeleaf.
@@ -14,6 +15,8 @@
     6.  We’ll need to specify the options value with th:value=”${color.hexCode}”
     7.  For the name of the color I wanted it to be a text thus th:text=”${color:name}”
     8.  For the style we want it to be colored as the color name in the css, thus: th:style=”|color:${color.hexCode}|”
+    NEXT: ENTRY 25: CAPTURING FORM VALIDATION ERRORS ENTITY CLASS
+    GOTO: Category.java
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
