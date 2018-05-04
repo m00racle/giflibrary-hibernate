@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27
+//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27; ENTRY 28;
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -124,8 +124,18 @@ import java.util.List;
  *      if statement.
  *  5.  Else if there is already has model attributes named category then we won’t add another one because that mean
  *      a user had submitted invalid data. Thus we just let it roll and do nothing.
- *  NEXT: ENTRY 28: DISPLAYING VALIDATION MESSAGE
  *
+ *  ENTRY 28: DISPLAYING VALIDATION MESSAGE
+ *  1.  Once again we’ll utilize the addCategory method’s redirectAttributes object to pass on validation results to
+ *      the form upon redirection.
+ *      NOTE: this is where in teacher’s opinion that Spring framework lacks a bit in data validation. Although this
+ *      method works it is not the most recommended way of informing the errors.
+ *  2.  If the BindingResult result reveals that we do have errors upon validation, we want to include those validation
+ *      errors for redirects. We use :
+ *      redirectAttributes.addFlashAttribute(“org.springframework.validation.BindingResult.category”, result);
+ *      This will combine this validation data to category attribute in the same method for Thymeleaf to use.
+ *  NEXT: ENTRY 29: DISPLAYING VALIDATION MESSAGE
+ *  GOTO: templates/category/form.html
  *  */
 @Controller
 public class CategoryController {
@@ -200,6 +210,9 @@ public class CategoryController {
     public String addCategory(@Valid Category category, BindingResult result, RedirectAttributes redirectAttributes) {
         // Add category if valid data was received 23-1; 26-5;
         if(result.hasErrors()){
+            //28-2;
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.category",
+                    result);
             //27-2;
             redirectAttributes.addFlashAttribute("category", category);
             //26-6;
