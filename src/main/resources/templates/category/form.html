@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ENTRY 24;-->
+<!-- ENTRY 24; ENTRY 29;-->
 <!-- ENTRY 24: HTML FORM FOR ADDING CATEGORY
     1.  We are going to add Thymeleaf attributes at <form> tag :
         a.  The action : th:action = “@{/categories}” <- NOTE: this is Thymeleaf url expression.
@@ -17,7 +17,27 @@
     8.  For the style we want it to be colored as the color name in the css, thus: th:style=”|color:${color.hexCode}|”
     NEXT: ENTRY 25: CAPTURING FORM VALIDATION ERRORS ENTITY CLASS
     GOTO: Category.java
--->
+
+    ENTRY 29: DISPLAYING VALIDATION MESSAGE
+    1.  We want to give validation message as close as possible to the corresponding input thus we start with the
+        <input> element for the category name. Thus under the <input> element we add new <div class=”error-message”>
+        element which contains actual error messages should validation errors be present.
+    2.  Thus we must ensure the <div class=”error-message”> will only be displayed when validation errors are present:
+        we add this attribute th:if=”${#fields.hasErrors(‘name’)}”
+    3.  That attribute will check if the name field and the text we want to display in this dive will come from some
+        default error message. To have access to this default error messages we must add (instead of th:text)
+        th:errors=”*{name}” attribute in <div class=”error-message”>
+    4.  Next we do the same thing for the colorCode which is the same in principle.
+        Place the <div class=”error-message> below the </select> element than change the if field name and
+        th:errors name from name to colorCode.
+    5.  Since in the app.css the .error-message is written as .error .error-message which means it is only active if
+        it’s part of child element of another div class. Thus we need to ensure we add
+        th:classappend= ${#fields.hasErrors(‘name’)} ?  error’’ meaning this is if statement if true the
+        classappend=”error” if false classappend=” “. NOTE: this is the update for th:classappend
+    6.  Same for the parent div that cover the <div class=error-message> for the select we add:
+        th:classappend= ${#fields.hasErrors(‘colorCode’)} ? error’’ .NOTE: this is the update for th:classappend
+    PS NOTE: WE CAN ADD MESSAGE IN THE Validation annotations of each @Entity
+ -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
 <body>
@@ -33,13 +53,17 @@
         </div>
         <div class="divider"></div>
         <div class="row">
-            <div class="col s12 l8">
+            <!--29-5;-->
+            <div class="col s12 l8" th:classappend="${#fields.hasErrors('name')} ? error">
                 <!-- 24-3;-->
                 <input type="text" placeholder="Category Name" th:field="*{name}"/>
+                <!--29-1; 29-2; 29-3;-->
+                <div class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
             </div>
         </div>
         <div class="row">
-            <div class="col s12 l8">
+            <!--29-6;-->
+            <div class="col s12 l8" th:classappend="${#fields.hasErrors('colorCode')} ? error">
                 <!--24-4; 24-5;-->
                 <select class="cs-select cs-skin-border" th:field="*{colorCode}">
                     <option value="" disabled="disabled">Category Color</option>
@@ -48,6 +72,8 @@
                         Aqua
                     </option>
                 </select>
+                <!--29-4;-->
+                <div class="error-message" th:if="${#fields.hasErrors('colorCode')}" th:errors="*{colorCode}"></div>
             </div>
         </div>
         <div class="row">
