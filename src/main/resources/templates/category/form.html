@@ -37,6 +37,10 @@
     6.  Same for the parent div that cover the <div class=error-message> for the select we add:
         th:classappend= ${#fields.hasErrors(‘colorCode’)} ? error’’ .NOTE: this is the update for th:classappend
     PS NOTE: WE CAN ADD MESSAGE IN THE Validation annotations of each @Entity
+
+    PRE-REQ ENTRY 30: ENCAPSULATING A FLASH MESSAGE
+    1.  Right click the web package to create a New Class and name it FlashMessage.
+    GOTO: com/mooracle/giflibh2/web/FlashMessage.java
  -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
