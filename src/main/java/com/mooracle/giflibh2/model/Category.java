@@ -88,10 +88,10 @@ public class Category {
     private Long id;
     //25-2; 25-3;
     @NotNull
-    @Size(min=3, max=12)
+    @Size(min=3, max=12, message = "The category name must be between {min} to {max} long")
     private String name;
     //25-5; 25-6;
-    @NotNull
+    @NotNull(message = "Please choose a color")
     @Pattern(regexp = "#[0-9a-fA-F]{6}")
     private String colorCode;
 
