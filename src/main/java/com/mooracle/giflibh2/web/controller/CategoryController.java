@@ -3,6 +3,7 @@ package com.mooracle.giflibh2.web.controller;
 import com.mooracle.giflibh2.model.Category;
 import com.mooracle.giflibh2.service.CategoryService;
 import com.mooracle.giflibh2.web.Color;
+import com.mooracle.giflibh2.web.FlashMessage;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27; ENTRY 28;
+//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27; ENTRY 28; ENTRY 31;
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -136,6 +137,14 @@ import java.util.List;
  *      This will combine this validation data to category attribute in the same method for Thymeleaf to use.
  *  NEXT: ENTRY 29: DISPLAYING VALIDATION MESSAGE
  *  GOTO: templates/category/form.html
+ *
+ *  ENTRY 31: MAKING FLASH MESSAGE SURVIVES A REDIRECT
+ *  1.  We need to add a flashMessage object inside the addCategory method model map
+ *  2.  The positioning of the code is important thus make sure the flashMessage attribute follow the process that
+ *      we want to denote.
+ *  3.  Here we want to give flash message when a Category is successfully added.
+ *  4.  Thus below the save procedure we’re going to add
+ *      redirectAttribute.addFlashAttribute(“flash”, new FlashMessag(...) fill it with constructor spec
  *  */
 @Controller
 public class CategoryController {
@@ -219,6 +228,9 @@ public class CategoryController {
             return "redirect:/categories/add";
         }
         categoryService.save(category);
+        //30-4;
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category added",
+                FlashMessage.Status.SUCCESS));
         // TODO: Redirect browser to /categories 23-4b;
         return "redirect:/categories";
     }
