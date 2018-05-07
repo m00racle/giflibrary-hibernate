@@ -25,7 +25,7 @@ public class FlashMessage {
     }
 
     //30-4;
-    public enum Status{
+    public static enum Status{
         //30-6;
         SUCCESS, FAILURE
     }
