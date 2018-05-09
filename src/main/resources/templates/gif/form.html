@@ -1,5 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- ENTRY 32;-->
+<!-- ENTRY 32: A File Upload Form in Thymeleaf
+    1.  Alter the HTML <form> element to add new attribute called enctype which stands for encryption type.
+        <form enctype=........>
+    2.  In the attribute value we choose multipart/form-data which required when we want to use forms that have a file
+        upload control. <form enctype=”multipart/form-data”>
+    3.  This will allows the <form> to include not only simple parameter value pairs but also file data
+    4.  In the same <form> we will add object binding remember the th:object to the attribute named gif:
+        <form enctype=”multipart/form-data” th:object=”${gif}”>
+    5.  WARNING: you need to add <html lang="en" xmlns:th="http://www.thymeleaf.org"> in the top of the
+        templates/gif/form.html!
+    6.  In the <input type=”text” placeholder=”description”> add th:fied=”*{description}”
+        to bind with th:object=”${gif}”
+    7.  Next for the category option (in the <select>). We need to bind it also to the gif object. However, the
+        category is related to the Category class which inside it there are few properties such as id.
+    8.  Thus we use category.id to refer to the id field in the Category class not in gif class.
+        Thus <option th:field=”*{category.id}”>
+    9.  As for the last part of the <form> element the file field, we do not bind it all because the file property is
+        not a property from Gif entitiy at all. For now let’s just keep it that way, learn more on the Teacher’s note.
+        WARNING: the name of the file attribute is not yet being set, thus name="file"
+    10.  Next we need to complete the <form> elelment tag by adding action=”@{/gifs}” URI and method=”post”
+    11. Next we need to iterate all category instead of only making one static category. Thus we need to add to
+        second <option> : th:each=”cat : ${categories}”
+    12. For the value to be sent inside the second <option> we’ll be choosing to use category id on this iteration of
+        the loop happens to be.: th:value=”cat.id”
+    13. As for the text to be displayed it will be th:text=”cat.name”
+    14. Lastly the style must be also be dynamic : (remember to use pipe characters)
+        th:style=”|color:${cat.colorCode}|”
+    NEXT: we need to add those attributes declared in the template/gif/form.html to the model in the controller either
+    directly or via attributes. There are two objects we need to add:
+        a.  The ${gif} object
+        b.  The collection of ${categories }
+    We need to head to GifController.java class to do this.
+
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('upload')"></head>
 <body>
 <div th:replace="layout :: nav"></div>
@@ -12,11 +47,13 @@
         </div>
     </div>
     <div class="divider"></div>
-    <form>
+    <!--32-2; 32-4; 32-10;-->
+    <form enctype="multipart/form-data" th:object="${gif}" th:action="@{/gifs}" method="post">
         <div class="row">
             <div class="col s12 l8">
                 <div class="file-wrapper">
-                    <input type="file" id="file"/>
+                    <!-- 32-9; -->
+                    <input type="file" id="file" name="file"/>
                     <span class="placeholder" data-placeholder="Choose an image...">Choose an image...</span>
                     <label for="file" class="button">Browse</label>
                 </div>
@@ -24,14 +61,17 @@
         </div>
         <div class="row">
             <div class="col s12 l8">
-                <input type="text" placeholder="Description"/>
+                <!--32-6;-->
+                <input type="text" placeholder="Description" th:field="*{description}"/>
             </div>
         </div>
         <div class="row">
             <div class="col s12 l8">
-                <select class="cs-select cs-skin-border">
+                <!--32-8; 32-11; 32-12; 32-13-->
+                <select class="cs-select cs-skin-border" th:field="*{category.id}">
                     <option value="" disabled="disabled">Select a category</option>
-                    <option style="color:#59b3b3">Technology</option>
+                    <option th:each="cat:${categories}" th:value="${cat.id}"
+                            th:text="${cat.name}" th:style="|color:${cat.colorCode}|">Technology</option>
                 </select>
             </div>
         </div>
