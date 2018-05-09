@@ -1,6 +1,8 @@
 package com.mooracle.giflibh2.web.controller;
 
 import com.mooracle.giflibh2.model.Gif;
+import com.mooracle.giflibh2.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +10,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+//ENTRY 33;
+/** ENTRY 33: A FILE UPLOAD FROM IN THYMELEAF
+ *  1.  Scroll down to the method that renders a form for adding a new gif and it’s called formNewGif
+ *  2.  We start by adding the “gif” attribute. model.addAtribute(“gif”, new Gif());
+ *  3.  Next we need to add the current list of categories. To do this we need to @Autowired the CategoryService
+ *      interface.
+ *  4.  We scroll up to the top of the class GifController.java and add @Autowired private CategoryService and name it
+ *      categoryService.
+ *  5.  Go back to the formNewGif method and add that list of categories.
+ *      model.addAttribute(“categories”, categoryService.findAll())
+ * */
+
 @Controller
 public class GifController {
 
+    //33-4;
+    @Autowired
+    private CategoryService categoryService;
     // Home page - index of all GIFs
     @RequestMapping("/")
     public String listGifs(Model model) {
@@ -62,8 +79,10 @@ public class GifController {
     // Form for uploading a new GIF
     @RequestMapping("/upload")
     public String formNewGif(Model model) {
-        // TODO: Add model attributes needed for new GIF upload form
-
+        // 33-2: Add model attributes needed for new GIF upload form
+        model.addAttribute("gif", new Gif());
+        //33-5;
+        model.addAttribute("categories", categoryService.findAll());
         return "gif/form";
     }
 
