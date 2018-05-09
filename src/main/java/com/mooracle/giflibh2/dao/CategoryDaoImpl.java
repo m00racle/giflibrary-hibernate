@@ -49,14 +49,23 @@ import java.util.List;
  *      database.
  *  NEXT: ENTRY 22: SAVING ENTITIES SERVICE LAYER
  *  GOTO: service/CategoryServiceImpl.java
- *      */
+ *
+ *  ENTRY 40: CODING THE GIF DAO
+ *  1.  In findById we add Session session = sessionFactory.openSession();
+ *  2.  Then we add session.close so it can be copy and pasted in the delete method
+ *  3.  Back in the findById method we add Category category = session.get(Category.class, id); and return category
+ *  4.  In the delete we start by adding sessin.beginTransaction();
+ *  5.  Then we do the business: session.delete(category);
+ *  6.  Then session.getTransaction().commit();
+ *
+ *  */
 
 //16-3:
 @Repository
 public class CategoryDaoImpl implements CategoryDao {
     //16-2a:
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     @Override
     public List<Category> findAll() {
@@ -84,7 +93,13 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public Category findById(Long id) {
-        return null;
+        //40-1.
+        Session session = sessionFactory.openSession();
+        //40-3.
+        Category category = session.get(Category.class,id);
+        //40-2.
+        session.close();
+        return category;
     }
 
     @Override
@@ -103,6 +118,15 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public void delete(Category category) {
-
+        //40-1.
+        Session session = sessionFactory.openSession();
+        //40-4.
+        session.beginTransaction();
+        //40-5.
+        session.delete(category);
+        //40-6.
+        session.getTransaction().commit();
+        //40-2.
+        session.close();
     }
 }
