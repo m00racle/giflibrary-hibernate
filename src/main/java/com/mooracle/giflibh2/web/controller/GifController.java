@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 33;
+//ENTRY 33; ENTRY 35;
 /** ENTRY 33: A FILE UPLOAD FROM IN THYMELEAF
  *  1.  Scroll down to the method that renders a form for adding a new gif and it’s called formNewGif
  *  2.  We start by adding the “gif” attribute. model.addAtribute(“gif”, new Gif());
@@ -20,6 +21,16 @@ import java.util.List;
  *      categoryService.
  *  5.  Go back to the formNewGif method and add that list of categories.
  *      model.addAttribute(“categories”, categoryService.findAll())
+ *
+ *  ENTRY 35: CODING THE GIF SERVICE
+ *  1.  Open the structure tool window (alt+7 of |view|tool window|structure) then go to addGif method.
+ *  2.  In order to capture the file data upon upload we need to add MultipartFile parameter to this addGif method.
+ *      Let’s just name it file: addGif(MultipartFile file)
+ *  3.  To tell Spring framework that this is a value that will be passed via the HTTP request as parameter in the
+ *      payload we’ll use @RequestParam.
+ *  4.  The @RequestParam offers the name attribute that we can specify. But in this case we will use the name same as
+ *      the name of the MultipartFile which is file. This is because we also use the name file in the form.html.:
+ *  5.  Thus the added parameter will be addGif(@RequestParam MultipartFile file)
  * */
 
 @Controller
@@ -69,7 +80,7 @@ public class GifController {
 
     // Upload a new GIF
     @RequestMapping(value = "/gifs", method = RequestMethod.POST)
-    public String addGif() {
+    public String addGif(@RequestParam MultipartFile file) {
         // TODO: Upload new GIF if data is valid
 
         // TODO: Redirect browser to new GIF's detail view
