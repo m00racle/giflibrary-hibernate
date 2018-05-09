@@ -31,6 +31,10 @@ import java.util.List;
  *  4.  The @RequestParam offers the name attribute that we can specify. But in this case we will use the name same as
  *      the name of the MultipartFile which is file. This is because we also use the name file in the form.html.:
  *  5.  Thus the added parameter will be addGif(@RequestParam MultipartFile file)
+ *  PRE-REQ:
+ *  1.  Create a new Interface in the com.mooracle.giflibh2.service name it GifService
+ *  GOTO: com/mooracle/giflibh2/service/GifService.java
+ *
  * */
 
 @Controller
