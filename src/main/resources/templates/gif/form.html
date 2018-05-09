@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ENTRY 32;-->
+<!-- ENTRY 32; ENTRY 34;-->
 <!-- ENTRY 32: A File Upload Form in Thymeleaf
     1.  Alter the HTML <form> element to add new attribute called enctype which stands for encryption type.
         <form enctype=........>
@@ -32,6 +32,17 @@
         a.  The ${gif} object
         b.  The collection of ${categories }
     We need to head to GifController.java class to do this.
+
+ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
+    1.  It could be because the label on the form can't find an input element whose id is file.
+    2.  In browsers the four attribute connects labels to input elements using the input elements id attribute.
+    3.  In the <input> element has and ID attribute named file and we also added name attribute with the value also file.
+    4.  The <label> element is what renders the button there, but when we use this for attribute in a label, whatever
+        value you place here, the browser will connect that with its associated input element.
+    5.  Using that input element’s id attribute not name attribute, so this is for a file that means this label will be
+        associated with this input since this input has an id of file.
+    6.  Be sure to check that out if by chance you come up with a browse button that does not work.
+    WARNING: <label for="file"> the for attribute must match the <input id="file"> attribute
 
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
