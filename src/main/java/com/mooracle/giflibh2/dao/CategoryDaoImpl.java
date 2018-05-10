@@ -58,6 +58,12 @@ import java.util.List;
  *  5.  Then we do the business: session.delete(category);
  *  6.  Then session.getTransaction().commit();
  *
+ *  ENTRY 45: UPDATING CATEGORIES PART 2
+ *  Go to: dao/CategoryDaoImpl.java class
+ *  1.  we only have session.save(category) in the save method.
+ *  2.  This is not quite well perceived since if we want to update using CategoryContoller.java
+ *  3.  this will CREATE rather than UPDATE the category we produced in updateCategory method
+ *  4.  Thus we need to change it into session.saveOrUpdate(category);
  *  */
 
 //16-3:
@@ -109,7 +115,7 @@ public class CategoryDaoImpl implements CategoryDao {
         //21-2b:
         session.beginTransaction();
         //-21-2c:
-        session.save(category);
+        session.saveOrUpdate(category);
         //21-2d:
         session.getTransaction().commit();
         //21-2e:
