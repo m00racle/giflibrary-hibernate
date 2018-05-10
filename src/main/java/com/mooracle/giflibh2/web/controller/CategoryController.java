@@ -153,6 +153,32 @@ import java.util.List;
  *      model.addAttribute(“category”, categoryService.findById(categoryId);
  *  3.  NOTE: we already modify the CategoryDaoImpl on findById method thus this will work
  *  4.  Also we just made patch the CategoryServiceImpl class to findById method.
+ *
+ *  ENTRY 44: UPDATING CATEGORIES PART 2
+ *  We need to go to web/controller/CategoryController to do this:
+ *  1.  First we need to modify the existing formNewCategory method to add 3 more attributes
+ *  2.  First model.addAttribute(“action”, “/categories”);
+ *  3.  Second model.addAttribute(“heading”, “New Category”);
+ *  4.  Third model.addAttribute(“submit”, “Add”);
+ *  5.  Next we do the same for the formEditCategory method
+ *  6.  First model.addAttribute(“action”, String.format(“/categories/%s”, categoryId);
+ *  7.  NOTE: categoryId here will have come from the URI itself
+ *  8.  Second, model.addAttribute(“heading”, “Edit Category”);
+ *  9.  Lastly, model.addAttribute(“submit”, “Update”);
+ *  10. Next we go to updateCategory method, here we want to catch any validation errors.
+ *  11. If errors do occur the redirect back to the edit form with a flash message.
+ *  12. This is similar as addCategory method thus we use that method as reference.
+ *  13. First let’s make up the parameters, add @Valid Category category
+ *  14. Second parameter will be BindingResult result
+ *  15. Third parameter will be RedirectAttributes redirectAttributes
+ *  16. Next same as addCategory method we validate the BindingResult
+ *  17. Then if there are errors add redirectAttributes.addFlashAttribute same as addCategory method.
+ *  18. Redirect back to return String.format(“redirect:/categories/%s/edit”, categoryId);
+ *  19. But before step 18 we need add one more parameter: @PathVariable Long categoryId
+ *  20. NOTE: @PathVariable takes categoryId from the path of the url submitted when calling edit
+ *  21. When it is not error just send a flash message like addCategory method
+ *  22. Call categoryService.save(category);
+ *  23. Finally return “redirect:/categories”
  *  */
 @Controller
 public class CategoryController {
@@ -202,6 +228,13 @@ public class CategoryController {
         }
         //23-8;
         model.addAttribute("colors", Color.values());
+        //44-2.
+        model.addAttribute("action", "/categories");
+        //44-3.
+        model.addAttribute("heading", "New Category");
+        //44-4.
+        model.addAttribute("submit", "Add");
+
         return "category/form";
     }
 
@@ -213,16 +246,34 @@ public class CategoryController {
             model.addAttribute("category", categoryService.findById(categoryId));
         }
         model.addAttribute("colors", Color.values());
+        //44-6.
+        model.addAttribute("action", String.format("/categories/%s", categoryId));
+        //44-8.
+        model.addAttribute("heading", "Edit Category");
+        //44-9.
+        model.addAttribute("submit", "Update");
         return "category/form";
     }
 
-    // Update an existing category
+    // Update an existing category: 44-13. 44-14. 44-15. 44-19.
     @RequestMapping(value = "/categories/{categoryId}", method = RequestMethod.POST)
-    public String updateCategory() {
-        // TODO: Update category if valid data was received
-
-        // TODO: Redirect browser to /categories
-        return null;
+    public String updateCategory(@Valid Category category, BindingResult result,
+                                 RedirectAttributes redirectAttributes, @PathVariable Long categoryId) {
+        // 44-16. 44-17: Update category if valid data was received
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.category",
+                    result);
+            redirectAttributes.addFlashAttribute("category", category);
+            //44-18.
+            return String.format("redirect:/categories/%s/edit", categoryId);
+        }
+        //44-22.
+        categoryService.save(category);
+        //44-21.
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category Updated",
+                FlashMessage.Status.SUCCESS));
+        // 44-23: Redirect browser to /categories
+        return "redirect:/categories";
     }
 
     // Add a category; 23-3; 26-2; 26-3; 27-1
@@ -242,7 +293,7 @@ public class CategoryController {
         //30-4;
         redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category added",
                 FlashMessage.Status.SUCCESS));
-        // TODO: Redirect browser to /categories 23-4b;
+        // 23-4b: Redirect browser to /categories 23-4b;
         return "redirect:/categories";
     }
 
