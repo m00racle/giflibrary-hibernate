@@ -41,6 +41,18 @@
     PRE-REQ ENTRY 30: ENCAPSULATING A FLASH MESSAGE
     1.  Right click the web package to create a New Class and name it FlashMessage.
     GOTO: com/mooracle/giflibh2/web/FlashMessage.java
+
+    ENTRY 43: Updating Categories Part 1
+templates/category/form.html
+    1.  We’ll start with <form> action attribute. Let’s change the attribute into variable expression @{${action}}
+    2.  Next for the heading “New Category” we changed into variable expression th:text=${heading}
+    3.  Lastly from the submit button we make the text variable expression th:text=${submit}
+    4.  The final change we’ll need to make here is ensuring that our categoryId is preserved across the HTTP request
+        response cycle.
+    5.  When the form is submitted we want to make sure that the category is indeed updated not creating a new one.
+    6.  To do that we’ll add a hidden input inside the <form> elemernt: <input type=”hidden”>
+    7.  Then bind it with categoryId <input type=”hidden” th:field=”*{id}”
+
  -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
@@ -48,11 +60,14 @@
 <div th:replace="layout :: nav"></div>
 <div th:replace="layout :: flash"></div>
 <div class="container">
-    <!--24-1; 24-2;-->
-    <form th:action="@{/categories}" method="post" th:object="${category}">
+    <!--24-1; 24-2; 43-1. -->
+    <form th:action="@{${action}}" method="post" th:object="${category}">
+        <!-- 43-6 -->
+        <input type="hidden" th:field="*{id}"/>
         <div class="row">
             <div class="col s12">
-                <h2>New Category</h2>
+                <!--43-2. -->
+                <h2 th:text="${heading}">New Category</h2>
             </div>
         </div>
         <div class="divider"></div>
@@ -82,7 +97,8 @@
         </div>
         <div class="row">
             <div class="col s12 l8">
-                <button type="submit" class="button">Add</button>
+                <!-- 43-3. -->
+                <button type="submit" class="button" th:text="${submit}">Add</button>
                 <a th:href="@{/categories}" class="button">Cancel</a>
             </div>
         </div>
