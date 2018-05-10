@@ -2,16 +2,19 @@ package com.mooracle.giflibh2.web.controller;
 
 import com.mooracle.giflibh2.model.Gif;
 import com.mooracle.giflibh2.service.CategoryService;
+import com.mooracle.giflibh2.service.GifService;
+import com.mooracle.giflibh2.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 33; ENTRY 35;
+//ENTRY 33; ENTRY 35; ENTRY 41;
 /** ENTRY 33: A FILE UPLOAD FROM IN THYMELEAF
  *  1.  Scroll down to the method that renders a form for adding a new gif and it’s called formNewGif
  *  2.  We start by adding the “gif” attribute. model.addAtribute(“gif”, new Gif());
@@ -35,11 +38,33 @@ import java.util.List;
  *  1.  Create a new Interface in the com.mooracle.giflibh2.service name it GifService
  *  GOTO: com/mooracle/giflibh2/service/GifService.java
  *
+ *  ENTRY 41: Persisting a GIF From the Controller
+ *  1.  First @Autowired private GifService and name it gifService.
+ *  2.  Go to the addGif method to add Gif gif as parameter and finish the uploading work
+ *  3.  Invoke the gifService.save method and passed in (Gif gif, MultipartFile file)
+ *  4.  After we save we should include a flash message indicating that save completed
+ *  5.  First add RedirectAttrbute in the addGif parameter and name it redirectAttribute.
+ *  6.  Then we call
+ *      redirectAttribute.addFlashAttribute(“flash”, new FlashMessage(“Gif Added”, FlashMessage.Status.SUCCESS));
+ *  7.  As for the redirect this time it will not be to the list of gif but to the newly added gif.
+ *  8.  Thus it will be return String.format(“redirect:/gif/%s”, gif.getId())
+ *  9.  The HIbernate session save method will takes care of updating the id field of the gif for us.
+ *  10. Next we need to set the gifDetail method to view the correct gif (in this case the newly added)
+ *  11. We need to define the Gif gif from null to gifService.findById and passed (gifId)
+ *      NOTE: (gifId) is comes from /gif/{gifId}/ @RequestMapping. Other things already set by Chris.
+ *  12. Next we move to the rendering of actual image. This will be used so that the page can view actual .gif
+ *      image file.
+ *  13. We go to gifImage method and fetch the gif the same way as gifDetail method
+ *  14. Next we need to return the gif byte array: return gifService.findById(gifId).getBytes();
+ *  MORE NOTES ON THE GOOGLE DRIVE STUDY NOTES.
  * */
 
 @Controller
 public class GifController {
 
+    //41-1.
+    @Autowired
+    private GifService gifService;
     //33-4;
     @Autowired
     private CategoryService categoryService;
@@ -53,22 +78,22 @@ public class GifController {
         return "gif/index";
     }
 
-    // Single GIF page
+    // Single GIF page.41-10.
     @RequestMapping("/gifs/{gifId}")
     public String gifDetails(@PathVariable Long gifId, Model model) {
-        // TODO: Get gif whose id is gifId
-        Gif gif = null;
+        // 41-11: Get gif whose id is gifId
+        Gif gif = gifService.findById(gifId);
 
         model.addAttribute("gif", gif);
         return "gif/details";
     }
 
-    // GIF image data
+    // GIF image data.41-12.
     @RequestMapping("/gifs/{gifId}.gif")
     @ResponseBody
     public byte[] gifImage(@PathVariable Long gifId) {
-        // TODO: Return image data as byte array of the GIF whose id is gifId
-        return null;
+        // 41-14.41-15: Return image data as byte array of the GIF whose id is gifId
+        return gifService.findById(gifId).getBytes();
     }
 
     // Favorites - index of all GIFs marked favorite
@@ -82,13 +107,16 @@ public class GifController {
         return "gif/favorites";
     }
 
-    // Upload a new GIF
+    // Upload a new GIF.41-2.41.5
     @RequestMapping(value = "/gifs", method = RequestMethod.POST)
-    public String addGif(@RequestParam MultipartFile file) {
-        // TODO: Upload new GIF if data is valid
-
-        // TODO: Redirect browser to new GIF's detail view
-        return null;
+    public String addGif(Gif gif, @RequestParam MultipartFile file, RedirectAttributes redirectAttributes) {
+        // 41-3: Upload new GIF if data is valid
+        gifService.save(gif, file);
+        //41-6.
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("gif uploaded",
+                FlashMessage.Status.SUCCESS));
+        // 41-8: Redirect browser to new GIF's detail view
+        return String.format("redirect:/gifs/%s", gif.getId());
     }
 
     // Form for uploading a new GIF
@@ -102,7 +130,7 @@ public class GifController {
     }
 
     // Form for editing an existing GIF
-    @RequestMapping(value = "/gifs/{dgifI}/edit")
+    @RequestMapping(value = "/gifs/{gifId}/edit")
     public String formEditGif(@PathVariable Long gifId, Model model) {
         // TODO: Add model attributes needed for edit form
 
