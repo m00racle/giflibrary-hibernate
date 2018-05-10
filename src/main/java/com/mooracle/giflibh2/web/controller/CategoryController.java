@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27; ENTRY 28; ENTRY 31;
+//ENTRY 14; ENTRY 19; ENTRY 23; ENTRY 26; ENTRY 27; ENTRY 28; ENTRY 31; ENTRY 42
 /** ENTRY 14: FETCHING DATA WITH HIBERNATE IN SPRING
  *  1.  Here we are ready to use Hibernate features SessionFActory to:
  *          - create a session
@@ -145,13 +145,21 @@ import java.util.List;
  *  3.  Here we want to give flash message when a Category is successfully added.
  *  4.  Thus below the save procedure we’re going to add
  *      redirectAttribute.addFlashAttribute(“flash”, new FlashMessag(...) fill it with constructor spec
+ *
+ *  ENTRY 42: Updating Categories Part 1
+ *  1.  The code needed in formEditCategory  basically similar to the formNewCategory method except instead of adding
+ *      new category it will edit existing one.
+ *  2.  So we make the same code as formNewCategory except we then fetch an existing category using the id:
+ *      model.addAttribute(“category”, categoryService.findById(categoryId);
+ *  3.  NOTE: we already modify the CategoryDaoImpl on findById method thus this will work
+ *  4.  Also we just made patch the CategoryServiceImpl class to findById method.
  *  */
 @Controller
 public class CategoryController {
     //14-2: 19-2;
     @Autowired
     /*private SessionFactory sessionFactory;<--19-1a: deleted**/
-    CategoryService categoryService;
+    private CategoryService categoryService;
 
     // Index of all categories
     @RequestMapping("/categories")
@@ -200,8 +208,11 @@ public class CategoryController {
     // Form for editing an existing category
     @RequestMapping("categories/{categoryId}/edit")
     public String formEditCategory(@PathVariable Long categoryId, Model model) {
-        // TODO: Add model attributes needed for edit form
-
+        // 42-1. 42-2: Add model attributes needed for edit form
+        if(!model.containsAttribute("category")) {
+            model.addAttribute("category", categoryService.findById(categoryId));
+        }
+        model.addAttribute("colors", Color.values());
         return "category/form";
     }
 
