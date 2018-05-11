@@ -26,6 +26,14 @@ import java.util.List;
  *  12. Then the Gif gif object will have included the bytes from the file thus: gifDao.save(gif);
  *  PRE-REQ: Create a GifDao interface inside the dao package.
  *
+ *  ENTRY 53: Using a Custom Validator on the Uploaded GIF
+ *  Go to: /service/GifServiceImpl class
+ *  1.  Implements newly added void update method
+ *  2.  Inside we need to ensure whether the MultipartFile file is present or not
+ *  3.  If present process the file and gif as in the save method
+ *  4.  If not (else) make new Gif called oldGif = gifDao.findById(gif.getId());
+ *  5.  Then set gif.setBytes(oldGif.getBytes());
+ *  6.  Out from if statement then gifDao.save(gif);
  * */
 
 //37-1;
@@ -54,13 +62,33 @@ public class GifServiceImpl implements GifService {
         try {
             //37-9;
             gif.setBytes(file.getBytes());
-            //37-12;
-            gifDao.save(gif);
+
         }catch (IOException ioe){
             //37-11;
             System.err.println("unable to get byte array from upload file");
         }
+        //37-12;
+        gifDao.save(gif);
+    }
 
+    @Override
+    public void update(Gif gif, MultipartFile file) {
+        //53-2.
+        if(gif.getFile()!= null && !file.isEmpty()){
+            //53-3.
+            try {
+                gif.setBytes(file.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            //53-4.
+            Gif oldGif = gifDao.findById(gif.getId());
+            //53-6.
+            gif.setBytes(oldGif.getBytes());
+        }
+        //53-7.
+        gifDao.save(gif);
     }
 
     @Override
