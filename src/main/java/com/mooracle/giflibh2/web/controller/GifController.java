@@ -7,10 +7,12 @@ import com.mooracle.giflibh2.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +73,19 @@ import java.util.List;
  *  4.  we have not build any validation for it so let's just fire away
  *  5.  just be careful with return String.format("redirect:/gifs/%s", gifId)
  *  6.  WARNING: for index ("/") need to Get all Gifs using gifService.findAll()
+ *
+ *  ENTRY 54: Using a Custom Validator on the Uploaded GIF
+ *  Now we go to the /web/controller/GifController.java class
+ *  1.  Since now MultipartFile file is part of @Transient field of Gif @Entity we can delete
+ *      the @RequestParam MultipartFile file in addGif method parameter and @Valid Gif gif
+ *  2.  Same as in the updateGif: delete @RequestParam MultipartFile file and @Valid Gif gif
+ *  3.  For addGif and updateGif mehtods add BindingResult result parameter
+ *  4.  For addGif and updateGif method build similar if(result.hasErrors()) as in CategoryController
+ *  5.  However, for addGif if there is error : return “redirect:/upload”
+ *  6.  While, updateGif : return String.format(“redirect:/gifs/%s/edit”, gifId);
+ *  7.  For addGif method outside the if statement call gifService.save(gif, gif.getFile());
+ *  8.  For updateGif call gifService.update(gif, gif.getFile());
+ *  9.  Both in the end : return String.format(“redirect:/gifs/%s”, gif.getId());
  * */
 
 @Controller
@@ -123,9 +138,17 @@ public class GifController {
 
     // Upload a new GIF.41-2.41.5
     @RequestMapping(value = "/gifs", method = RequestMethod.POST)
-    public String addGif(Gif gif, @RequestParam MultipartFile file, RedirectAttributes redirectAttributes) {
-        // 41-3: Upload new GIF if data is valid
-        gifService.save(gif, file);
+    public String addGif(@Valid Gif gif, RedirectAttributes redirectAttributes, BindingResult result) {
+        // 41-3: Upload new GIF if data is valid;54-4;
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gif",
+                    result);
+            redirectAttributes.addFlashAttribute("gif", gif);
+            //54-5.
+            return "redirect:/upload";
+        }
+        //54-7;
+        gifService.save(gif, gif.getFile());
         //41-6.
         redirectAttributes.addFlashAttribute("flash", new FlashMessage("gif uploaded",
                 FlashMessage.Status.SUCCESS));
@@ -163,10 +186,17 @@ public class GifController {
     // 49-3: Update an existing GIF
     @RequestMapping(value = "/gifs/{gifId}", method = RequestMethod.POST)
     public String updateGif(Gif gif, @PathVariable Long gifId, RedirectAttributes redirectAttributes,
-                            @RequestParam MultipartFile file) {
-        // 49-4: Update GIF if data is valid
-
-        gifService.save(gif, file);
+                            BindingResult result) {
+        // 49-4: Update GIF if data is valid;54-4;
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gif",
+                    result);
+            redirectAttributes.addFlashAttribute("gif", gif);
+            //54-6;
+            return String.format("redirect:/gifs/%s/edit", gifId);
+        }
+        //54-8;
+        gifService.update(gif, gif.getFile());
         redirectAttributes.addFlashAttribute("flash", new FlashMessage("Gif updated",
                 FlashMessage.Status.SUCCESS));
         // 49-5: Redirect browser to updated GIF's detail view
