@@ -16,6 +16,10 @@ import java.util.List;
  *      in the field declaration which our GifController will receive.
  *  Pre-req: make implementation of the GifService interface inside the service package and name it GifServiceImpl.java
  *          class.
+ *
+ *  ENTRY 52: Using a Custom Validator on the Uploaded GIF
+ *  Go to : /service/GifService interface
+ *  1.  Add void update(Gif gif, MultipartFile file);
  * */
 
 public interface GifService {
@@ -25,6 +29,8 @@ public interface GifService {
     Gif findById(Long id);
     //36-5;
     void save(Gif gif, MultipartFile file);
+    //52-1.
+    void update(Gif gif, MultipartFile file);
     //36-6;
     void delete(Gif gif);
 }
