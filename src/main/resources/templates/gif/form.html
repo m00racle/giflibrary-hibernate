@@ -50,6 +50,12 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
     2.  we modify the heading (h2) upload to th:text=${heading}
     3.  modify the submit button text th:text=${submit}
     4.  ensure gifId preserved across HTTP cycle <input type="hidden" th:field="*{id}"
+
+    ENTRY 55: Using a Custom Validator on the Uploaded GIF
+    Modify : /templates/gif/form.html
+    1.  The errors validation is similar to the /category/form.html just mirror that for reference
+    2.  One main thing to note <input type=”file” now has th:field=”*(file)” since it’s now @Transient in @Entity Gif.
+        th:field substitutes id and name attibutes
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('upload')"></head>
@@ -61,7 +67,9 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
         <div class="col s12">
             <!-- 48-2;-->
             <h2 th:text="${heading}">Upload</h2>
-            <div class="subtitle">Upload and share your GIFs with friends and family on Facebook, Twitter, and everywhere else.</div>
+            <div class="subtitle" th:if="${heading == 'Upload'}">
+                Upload and share your GIFs with friends and family on Facebook, Twitter, and everywhere else.
+            </div>
         </div>
     </div>
     <div class="divider"></div>
@@ -69,30 +77,36 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
     <form enctype="multipart/form-data" th:object="${gif}" th:action="@{${action}}" method="post">
         <!-- 48-4;-->
         <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{username}"/>
+        <input type="hidden" th:field="*{favorite}"/>
+        <input type="hidden" th:field="*{hash}"/>
         <div class="row">
             <div class="col s12 l8">
-                <div class="file-wrapper">
-                    <!-- 32-9; -->
-                    <input type="file" id="file" name="file"/>
+                <div class="file-wrapper" th:classappend="${#fields.hasErrors('file')} ? error">
+                    <!-- 32-9; 55-2; -->
+                    <input type="file" th:field="*{file}"/>
                     <span class="placeholder" data-placeholder="Choose an image...">Choose an image...</span>
-                    <label for="file" class="button">Browse</label>
+                    <label th:for="file" class="button">Browse</label>
+                    <div class="error-message" th:if="${#fields.hasErrors('file')}" th:errors="*{file}"></div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col s12 l8">
+            <div class="col s12 l8" th:classappend="${#fields.hasErrors('description')} ? error">
                 <!--32-6;-->
                 <input type="text" placeholder="Description" th:field="*{description}"/>
+                <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
         </div>
         <div class="row">
-            <div class="col s12 l8">
+            <div class="col s12 l8" th:classappend="${#fields.hasErrors('category')} ? error">
                 <!--32-8; 32-11; 32-12; 32-13-->
                 <select class="cs-select cs-skin-border" th:field="*{category.id}">
                     <option value="" disabled="disabled">Select a category</option>
                     <option th:each="cat:${categories}" th:value="${cat.id}"
                             th:text="${cat.name}" th:style="|color:${cat.colorCode}|">Technology</option>
                 </select>
+                <div class="error-message" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
             </div>
         </div>
         <div class="row">
