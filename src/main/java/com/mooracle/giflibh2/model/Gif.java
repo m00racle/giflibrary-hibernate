@@ -1,5 +1,7 @@
 package com.mooracle.giflibh2.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -41,6 +43,14 @@ import java.time.temporal.ChronoUnit;
  *  NEXT: ENTRY 13: FINISHING ADD JPA ANNOTATION FOR CATEGORY
  *  GOTO: Category.java
  *
+ *  ENTRY 50: Using a Custom Validator on the Uploaded GIF
+ *  We will start from adding the MultipartFile object as the field in the Gif @Entity class:
+ *  1.  We go to the /model/Gif class and go to the field declaration part
+ *  2.  We add private MultipartFile and name it file.
+ *  3.  Then we add @Transient to the file field to ensure it will not persist in database.
+ *  4.  Build getter and setter for file.
+ * Pre-req: we need to make a new package name validator on the com.mooracle.giflibh2 package and name it validator.
+ *      Inside we make a Java Class called GifValidator.java
  * */
 
 //12-1:
@@ -54,6 +64,11 @@ public class Gif {
     //12-4:
     @Lob
     private byte[] bytes;
+
+    //50-1.
+    @Transient
+    private MultipartFile file;
+
     private String description;
 
     //12-->
@@ -91,6 +106,14 @@ public class Gif {
     }
 
     //10-5: getters and setters for all fields
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
 
     public Long getId() {
         return id;
