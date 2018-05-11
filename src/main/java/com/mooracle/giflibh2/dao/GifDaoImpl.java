@@ -29,6 +29,9 @@ import java.util.List;
  *  15. For the delete just repeat the save method except use session.delete(gif) instead save.
  *  GOTO: com/mooracle/giflibh2/dao/CategoryDaoImpl.java to add findById and delete method
  *
+ *  ENTRY 46: UPDATING GIF
+ *  1.  we modify the DAO save method to session.saveOrUpdate to ensure update is possible
+ *
  * */
 
 //39-1.39-2.
@@ -70,7 +73,7 @@ public class GifDaoImpl implements GifDao {
         //39-12.
         session.beginTransaction();
         //39-13.
-        session.save(gif);
+        session.saveOrUpdate(gif);
         //39-14.
         session.getTransaction().commit();
         //39-7.
