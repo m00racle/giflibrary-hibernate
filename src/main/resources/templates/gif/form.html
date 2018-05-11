@@ -44,6 +44,12 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
     6.  Be sure to check that out if by chance you come up with a browse button that does not work.
     WARNING: <label for="file"> the for attribute must match the <input id="file"> attribute
 
+    ENTRY 48: UPDATING GIF
+    /templates/gif/form.html
+    1.  we modify the <form> action attribute to contain Thymeleaf variable expression ${action}
+    2.  we modify the heading (h2) upload to th:text=${heading}
+    3.  modify the submit button text th:text=${submit}
+    4.  ensure gifId preserved across HTTP cycle <input type="hidden" th:field="*{id}"
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('upload')"></head>
@@ -53,13 +59,16 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
 <div class="container upload">
     <div class="row">
         <div class="col s12">
-            <h2>Upload</h2>
+            <!-- 48-2;-->
+            <h2 th:text="${heading}">Upload</h2>
             <div class="subtitle">Upload and share your GIFs with friends and family on Facebook, Twitter, and everywhere else.</div>
         </div>
     </div>
     <div class="divider"></div>
-    <!--32-2; 32-4; 32-10;-->
-    <form enctype="multipart/form-data" th:object="${gif}" th:action="@{/gifs}" method="post">
+    <!--32-2; 32-4; 32-10; 48-1;-->
+    <form enctype="multipart/form-data" th:object="${gif}" th:action="@{${action}}" method="post">
+        <!-- 48-4;-->
+        <input type="hidden" th:field="*{id}"/>
         <div class="row">
             <div class="col s12 l8">
                 <div class="file-wrapper">
@@ -88,7 +97,8 @@ ENTRY 34: A File Upload Form in Thymeleaf IN CASE BROWSE BUTTON DOES NOT WORK
         </div>
         <div class="row">
             <div class="col s12">
-                <button type="submit" class="button">Upload</button>
+                <!-- 48-3;-->
+                <button type="submit" class="button" th:text="${submit}">Upload</button>
                 <a href="javascript:window.location = document.referrer;" class="button">Cancel</a>
             </div>
         </div>
