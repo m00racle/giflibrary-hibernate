@@ -61,6 +61,16 @@ import java.util.List;
  *  ENTRY 47: UPDATING GIF
  *  1.  just like Updating Category first we need to clone the same attributes from the formNewGif method
  *      NOTE: we don't make new Gif object rather fetch the existing Gif using @PathVariable gifId
+ *
+ *  ENTRY 49: UPDATING GIF
+ *  /web/controller/GifController.java
+ *  1.  modify the existing formNewGif to include proper newly created attributes, action, heading, submit
+ *  2.  modify the existing formEditGif to include proper attributes action, heading, submit
+ *  3.  go to updateGif method and build it appropriately similar to addGif method
+ *      add these parameters Gif gif, @PathVariable Long gifId, RedirectAttributes redirectAttributes
+ *  4.  we have not build any validation for it so let's just fire away
+ *  5.  just be careful with return String.format("redirect:/gifs/%s", gifId)
+ *  6.  WARNING: for index ("/") need to Get all Gifs using gifService.findAll()
  * */
 
 @Controller
@@ -75,8 +85,8 @@ public class GifController {
     // Home page - index of all GIFs
     @RequestMapping("/")
     public String listGifs(Model model) {
-        // TODO: Get all gifs
-        List<Gif> gifs = new ArrayList<>();
+        // 49-6: Get all gifs
+        List<Gif> gifs = gifService.findAll();
 
         model.addAttribute("gifs", gifs);
         return "gif/index";
@@ -130,6 +140,10 @@ public class GifController {
         model.addAttribute("gif", new Gif());
         //33-5;
         model.addAttribute("categories", categoryService.findAll());
+        //49-1.
+        model.addAttribute("action", "/gifs");
+        model.addAttribute("heading", "Upload");
+        model.addAttribute("submit", "Upload");
         return "gif/form";
     }
 
@@ -139,16 +153,24 @@ public class GifController {
         // 47-1: Add model attributes needed for edit form
         model.addAttribute("gif", gifService.findById(gifId));
         model.addAttribute("categories", categoryService.findAll());
+        //49-2.
+        model.addAttribute("action", String.format("/gifs/%s", gifId));
+        model.addAttribute("heading", "Edit Gif");
+        model.addAttribute("submit", "Update");
         return "gif/form";
     }
 
-    // Update an existing GIF
+    // 49-3: Update an existing GIF
     @RequestMapping(value = "/gifs/{gifId}", method = RequestMethod.POST)
-    public String updateGif() {
-        // TODO: Update GIF if data is valid
+    public String updateGif(Gif gif, @PathVariable Long gifId, RedirectAttributes redirectAttributes,
+                            @RequestParam MultipartFile file) {
+        // 49-4: Update GIF if data is valid
 
-        // TODO: Redirect browser to updated GIF's detail view
-        return null;
+        gifService.save(gif, file);
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("Gif updated",
+                FlashMessage.Status.SUCCESS));
+        // 49-5: Redirect browser to updated GIF's detail view
+        return String.format("redirect:/gifs/%s", gifId);
     }
 
     // Delete an existing GIF
