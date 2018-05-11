@@ -57,6 +57,10 @@ import java.util.List;
  *  13. We go to gifImage method and fetch the gif the same way as gifDetail method
  *  14. Next we need to return the gif byte array: return gifService.findById(gifId).getBytes();
  *  MORE NOTES ON THE GOOGLE DRIVE STUDY NOTES.
+ *
+ *  ENTRY 47: UPDATING GIF
+ *  1.  just like Updating Category first we need to clone the same attributes from the formNewGif method
+ *      NOTE: we don't make new Gif object rather fetch the existing Gif using @PathVariable gifId
  * */
 
 @Controller
@@ -132,8 +136,9 @@ public class GifController {
     // Form for editing an existing GIF
     @RequestMapping(value = "/gifs/{gifId}/edit")
     public String formEditGif(@PathVariable Long gifId, Model model) {
-        // TODO: Add model attributes needed for edit form
-
+        // 47-1: Add model attributes needed for edit form
+        model.addAttribute("gif", gifService.findById(gifId));
+        model.addAttribute("categories", categoryService.findAll());
         return "gif/form";
     }
 
