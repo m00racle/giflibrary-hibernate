@@ -53,6 +53,10 @@ templates/category/form.html
     6.  To do that we’ll add a hidden input inside the <form> elemernt: <input type=”hidden”>
     7.  Then bind it with categoryId <input type=”hidden” th:field=”*{id}”
 
+    ENTRY 56: DELETING CATEGORIES
+    In this HTML TEMPLATE we will modify the <div> delete and make sure the delete button only comes up in edit form
+    not in the add new category form. We will make the delete button functional with the appropriate attributes
+        1. we begin with div.row.delete
  -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('new category')"></head>
@@ -103,9 +107,9 @@ templates/category/form.html
             </div>
         </div>
     </form>
-    <div class="row delete">
+    <div class="row delete" th:if="${category.id != null}"><!-- make sure it only appears in edit form-->
         <div class="col s12 l8">
-            <form>
+            <form th:action="@{|/categories/${category.id}/delete|}" method="post"><!-- 56: add apropriate attributes-->
                 <button type="submit" class="button">Delete</button>
             </form>
         </div>
