@@ -86,6 +86,9 @@ import java.util.List;
  *  7.  For addGif method outside the if statement call gifService.save(gif, gif.getFile());
  *  8.  For updateGif call gifService.update(gif, gif.getFile());
  *  9.  Both in the end : return String.format(“redirect:/gifs/%s”, gif.getId());
+ *
+ *  ENTRY 63: DELETING GIF
+ *  GOTO: deleteGif method
  * */
 
 @Controller
@@ -203,13 +206,18 @@ public class GifController {
         return String.format("redirect:/gifs/%s", gifId);
     }
 
-    // Delete an existing GIF
+    /**ENTRY 64: Delete an existing GIF
+    * here we will fetch the gif with gifId and then delete it
+    *
+    * */
     @RequestMapping(value = "/gifs/{gifId}/delete", method = RequestMethod.POST)
-    public String deleteGif(@PathVariable Long gifId) {
-        // TODO: Delete the GIF whose id is gifId
-
-        // TODO: Redirect to app root
-        return null;
+    public String deleteGif(@PathVariable Long gifId, RedirectAttributes redirectAttributes) {
+        // 63: Delete the GIF whose id is gifId and add Flash message about it
+        gifService.delete(gifService.findById(gifId));
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("Gif Deleted!",
+                FlashMessage.Status.SUCCESS));
+        // 63: Redirect to app root
+        return "redirect:/";
     }
 
     // Mark/unmark an existing GIF as a favorite
