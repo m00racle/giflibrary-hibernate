@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,9 @@ import java.util.List;
  *
  *  ENTRY 63: DELETING GIF
  *  GOTO: deleteGif method
+ *
+ *  ENTRY 64: MARKING GIF AS FAVORITE
+ *  GOTO: toggleFavorite method
  * */
 
 @Controller
@@ -128,11 +132,20 @@ public class GifController {
         return gifService.findById(gifId).getBytes();
     }
 
-    // Favorites - index of all GIFs marked favorite
+    /** ENTRY 64: Favorites - index of all GIFs marked favorite
+     *  We will list all Gif which has favorite tag
+     *  We call all Gif then iterate all of it one by one. If it is favorite we add it into the faves list
+     *
+     * GOTO: searchResults method*/
     @RequestMapping("/favorites")
     public String favorites(Model model) {
-        // TODO: Get list of all GIFs marked as favorite
+        // 64: Get list of all GIFs marked as favorite
         List<Gif> faves = new ArrayList<>();
+        for(Gif gif : gifService.findAll()){
+            if(gif.isFavorite()){
+                faves.add(gif);
+            }
+        }
 
         model.addAttribute("gifs",faves);
         model.addAttribute("username","Chris Ramacciotti"); // Static username
@@ -206,9 +219,11 @@ public class GifController {
         return String.format("redirect:/gifs/%s", gifId);
     }
 
-    /**ENTRY 64: Delete an existing GIF
-    * here we will fetch the gif with gifId and then delete it
-    *
+    /** ENTRY 64: Delete an existing GIF
+    *   here we will fetch the gif with gifId and then delete it
+    *   Then update the gif
+     *   GOTO: favorites method
+     *
     * */
     @RequestMapping(value = "/gifs/{gifId}/delete", method = RequestMethod.POST)
     public String deleteGif(@PathVariable Long gifId, RedirectAttributes redirectAttributes) {
@@ -220,20 +235,46 @@ public class GifController {
         return "redirect:/";
     }
 
-    // Mark/unmark an existing GIF as a favorite
+    /**ENTRY 64: Mark/unmark an existing GIF as a favorite
+     * Both index.html and details.html templates for Gif have already put form for toggling the favorite button
+     * Now we just need to process it if the Gif does not get the favorite yet then it means it will be a favorite
+     * and vice versa.
+     * However, all of those task should be done in the service layer. Thus it will be beneficial for future API
+     * development Thus here in controller we just regulate the passing of the gif Object
+     *
+     * Here the controller only deals with managing traffic. Thus we now add new learning code the HttpServletRequest
+     * which enable us to read the data inside the request including the header. Inside the headet there is one data
+     * called referer which consist of from where (URI) this toggle favorite came from. Since there are two ways of
+     * toggling favorite (from "/" and from details page). Thus by knowing the refere we can return the usr to the last
+     * page he/she called the toggleFavorite.
+     *
+     * GOTO: GifService interface to build the toggleFavorite method and its implementation in GifServiceImpl class
+     *
+     * */
     @RequestMapping(value = "/gifs/{gifId}/favorite", method = RequestMethod.POST)
-    public String toggleFavorite(@PathVariable Long gifId) {
-        // TODO: With GIF whose id is gifId, toggle the favorite field
-
-        // TODO: Redirect to GIF's detail view
-        return null;
+    public String toggleFavorite(@PathVariable Long gifId, HttpServletRequest request) {
+        // 64: With GIF whose id is gifId, toggle the favorite field
+        Gif gif = gifService.findById(gifId);
+        //64: route the process of toggle favorite to the service layer
+        gifService.toggleFavorite(gif);
+        // 64: Redirect to GIF's detail view
+        return String.format("redirect:%s", request.getHeader("referer"));
     }
 
-    // Search results
+    /** ENTRY 64: Search results
+     *  we will list all the search result. We will make comparison of the description and String q.
+     *  however it will be best if all of that description is in all lowercase just to be safe
+     *
+     * */
     @RequestMapping("/search")
     public String searchResults(@RequestParam String q, Model model) {
-        // TODO: Get list of GIFs whose description contains value specified by q
+        // 64: Get list of GIFs whose description contains value specified by q
         List<Gif> gifs = new ArrayList<>();
+        for(Gif gif : gifService.findAll()){
+            if(gif.getDescription().toLowerCase().contains(q.toLowerCase())){
+                gifs.add(gif);
+            }
+        }
 
         model.addAttribute("gifs",gifs);
         return "gif/index";
