@@ -2,6 +2,7 @@ package com.mooracle.giflibh2.dao;
 
 
 import com.mooracle.giflibh2.model.Category;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,9 @@ import java.util.List;
  *  2.  This is not quite well perceived since if we want to update using CategoryContoller.java
  *  3.  this will CREATE rather than UPDATE the category we produced in updateCategory method
  *  4.  Thus we need to change it into session.saveOrUpdate(category);
+ *
+ *  ENTRY 59: DELETING CATEGORIES
+ *  GOTO: findById method
  *  */
 
 //16-3:
@@ -97,12 +101,32 @@ public class CategoryDaoImpl implements CategoryDao {
         return categories;
     }
 
+    /** ENTRY 59: DELETING CATEGORIES
+     * fixing Lazily Initialize a Collection of Gifs
+     * 1. the error is inside the CategoryController deleteCategory method. Thus we need to fix it. The error means that
+     * a collection in this category @Entity was not initialized which is the mapped collection named gifs. This
+     * collection by default is configured to not be initialized when a Category @Entity is fetched from database,
+     * this is called lazy loading.
+     *
+     * 2.   it turns out the @OneToMany has another element that we can specify called fetch. By default it has value o
+     *      fetchtype.eager, meaning that every time one or more categories are fetched from the database, another query
+     *      will be performed to fetch all GIF @Entity from the database that are associated with that category.
+     *
+     *  3.  CAUTION in a very big scale this can be resource consuming.
+     *  4.  Fortunately there is a better solution for our case, we can simply initialize the collection we need to.
+     *  5.  In the CategoryDaoImpl we can modify the findById method to call Hibernate.initialize on that
+     *      specific collection Category.getGifs();
+     *  6.  We were seeing that error because we tried to access a mapped collection outside of a Hibernate Session,
+     *      which is impossible.
+     * */
     @Override
     public Category findById(Long id) {
         //40-1.
         Session session = sessionFactory.openSession();
         //40-3.
         Category category = session.get(Category.class,id);
+        //59: initializing collection category.getGifs which is initialized above
+        Hibernate.initialize(category.getGifs());
         //40-2.
         session.close();
         return category;
