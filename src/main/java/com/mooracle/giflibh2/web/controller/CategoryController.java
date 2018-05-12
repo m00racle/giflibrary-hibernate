@@ -179,6 +179,11 @@ import java.util.List;
  *  21. When it is not error just send a flash message like addCategory method
  *  22. Call categoryService.save(category);
  *  23. Finally return “redirect:/categories”
+ *
+ *  ENTRY 57: DELETING CATEGORIES
+ *  GOTO: deleteCategory method
+ *
+ *
  *  */
 @Controller
 public class CategoryController {
@@ -297,12 +302,29 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
-    // Delete an existing category
+    /** ENTRY 57: Delete an existing category
+     * 1. we need to ensure if the category is really empty and if it is so we can proceed to delete
+     * 2. make sure to give appropriate flash messages and redirects even if it is not able to delete
+     *      -if it is not empty then redirect back to categories/{categoryId}/edit
+     *      -if it is empty just redirect back to "/categories"
+     * 3. to test if the category is empty we need tograb the category using categoryId but store it in other name: cat
+     *
+     *
+     * */
     @RequestMapping(value = "/categories/{categoryId}/delete", method = RequestMethod.POST)
-    public String deleteCategory(@PathVariable Long categoryId) {
-        // TODO: Delete category if it contains no GIFs
+    public String deleteCategory(@PathVariable Long categoryId, RedirectAttributes redirectAttributes) {
+        Category cat = categoryService.findById(categoryId);//<-- why don't use Category category?
+        if(cat.getGifs().size()>0){
+            redirectAttributes.addFlashAttribute(new FlashMessage("Category is not empty, Unable to delete",
+                    FlashMessage.Status.FAILURE));
+            return String.format("redirect:/categories/%s/edit", categoryId);
+        }
+        // 57: Delete category if it contains no GIFs
+        categoryService.delete(cat);
+        redirectAttributes.addFlashAttribute(new FlashMessage("Category deleted!",
+                FlashMessage.Status.SUCCESS));//<--add flash message that category has been deleted
 
-        // TODO: Redirect browser to /categories
-        return null;
+        // 57: Redirect browser to /categories
+        return "redirect:/categories";
     }
 }
