@@ -33,6 +33,9 @@ import java.util.List;
  *      categoryDao implementation: categoryDao.save(category);
  *  ENTRY 23: CONTROLLER METHOD FOR ADDING CATEGORY
  *  GOTO: web/controller/CategoryController.java
+ *
+ *  ENTRY 58: DELETING CATEGORIES
+ *  GOTO: delete method
  *  */
 
 //18-4;
@@ -59,8 +62,16 @@ public class CategoryServiceImpl implements CategoryService {
         categoryDao.save(category);
     }
 
+    /** ENTRY 58: DELETING CATEGORIES
+     * 1.   we are here to implements the method body of the delete method in this CategoryService layer
+     * 2.   we just need to call the categoryDao.delete method and pass the category
+     * in real life it will be best practice if the category is empty validation is being done in this service layer
+     * We can check if it is empty and if it is not we can just throw categoryNotEmptyException. Then in our controller
+     * when we called on this service layer's delete method we can add try catch.
+     * We will experiment with this later. Right now we tested the new code.
+     * */
     @Override
     public void delete(Category category) {
-
+       categoryDao.delete(category);
     }
 }
