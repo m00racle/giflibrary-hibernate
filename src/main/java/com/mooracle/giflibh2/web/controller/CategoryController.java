@@ -213,11 +213,14 @@ public class CategoryController {
         return "category/index";
     }
 
-    // Single category page
+    /* PATCH: Single category page
+    * BECAUSE we already fix the lazy loading error we can then build this section of the code
+    * it will be able to initialize the Gifs collection thus it should be okay now
+    * **/
     @RequestMapping("/categories/{categoryId}")
     public String category(@PathVariable Long categoryId, Model model) {
-        // TODO: Get the category given by categoryId
-        Category category = null;
+        // PATCH: Get the category given by categoryId
+        Category category = categoryService.findById(categoryId);
 
         model.addAttribute("category", category);
         return "category/details";
@@ -315,13 +318,13 @@ public class CategoryController {
     public String deleteCategory(@PathVariable Long categoryId, RedirectAttributes redirectAttributes) {
         Category cat = categoryService.findById(categoryId);//<-- why don't use Category category?
         if(cat.getGifs().size()>0){
-            redirectAttributes.addFlashAttribute(new FlashMessage("Category is not empty, Unable to delete",
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category is not empty, Unable to delete",
                     FlashMessage.Status.FAILURE));
             return String.format("redirect:/categories/%s/edit", categoryId);
         }
-        // 57: Delete category if it contains no GIFs
+        // 57: Delete category if it contains no GIFs (Patched for forget to add attributeName)
         categoryService.delete(cat);
-        redirectAttributes.addFlashAttribute(new FlashMessage("Category deleted!",
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category deleted!",
                 FlashMessage.Status.SUCCESS));//<--add flash message that category has been deleted
 
         // 57: Redirect browser to /categories
