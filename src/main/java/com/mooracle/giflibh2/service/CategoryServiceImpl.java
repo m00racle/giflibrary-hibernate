@@ -36,6 +36,9 @@ import java.util.List;
  *
  *  ENTRY 58: DELETING CATEGORIES
  *  GOTO: delete method
+ *
+ *  ENTRY 60: Custom Exception in the Service Layer
+ *  GOTO: delete method
  *  */
 
 //18-4;
@@ -69,9 +72,16 @@ public class CategoryServiceImpl implements CategoryService {
      * We can check if it is empty and if it is not we can just throw categoryNotEmptyException. Then in our controller
      * when we called on this service layer's delete method we can add try catch.
      * We will experiment with this later. Right now we tested the new code.
+     *
+     * ENTRY 60: Custom Exception in the Service Layer
+     *      we will create here the validation non empty category and make new class CategoryNotEmptyException class
+     *      inside the service package. If the category is not empty we throw exception.
      * */
     @Override
-    public void delete(Category category) {
+    public void delete(Category category) throws CategoryNotEmptyException {
+        if(category.getGifs().size()>0){
+            throw new CategoryNotEmptyException();
+        }
        categoryDao.delete(category);
     }
 }

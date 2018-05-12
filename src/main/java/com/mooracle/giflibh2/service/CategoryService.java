@@ -29,5 +29,5 @@ public interface CategoryService {
     void save(Category category);
 
     //15-1d:
-    void delete(Category category);
+    void delete(Category category) throws CategoryNotEmptyException;
 }
