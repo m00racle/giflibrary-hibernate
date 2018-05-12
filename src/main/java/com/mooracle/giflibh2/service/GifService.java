@@ -20,6 +20,10 @@ import java.util.List;
  *  ENTRY 52: Using a Custom Validator on the Uploaded GIF
  *  Go to : /service/GifService interface
  *  1.  Add void update(Gif gif, MultipartFile file);
+ *
+ *  ENTRY 65: Marking Gif as Favorite
+ *  Building the toggleFavorite method interface
+ *  GOTO: GifServiceImpl for implementation
  * */
 
 public interface GifService {
@@ -33,4 +37,6 @@ public interface GifService {
     void update(Gif gif, MultipartFile file);
     //36-6;
     void delete(Gif gif);
+
+    void toggleFavorite(Gif gif);
 }

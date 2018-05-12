@@ -34,6 +34,9 @@ import java.util.List;
  *  4.  If not (else) make new Gif called oldGif = gifDao.findById(gif.getId());
  *  5.  Then set gif.setBytes(oldGif.getBytes());
  *  6.  Out from if statement then gifDao.save(gif);
+ *
+ *  ENTRY 65: Marking GOF as Favorites
+ *  GOTO: toggleFavorite method
  * */
 
 //37-1;
@@ -95,5 +98,17 @@ public class GifServiceImpl implements GifService {
     public void delete(Gif gif) {
         //37-7;
         gifDao.delete(gif);
+    }
+
+    /** ENTRY 65: Marking GIF as Favorites
+     * Here we just want to set the favvorite value but using more practical way we set the favorite as the opposite
+     * condition of current isFavorite value
+     *
+     * Then do not forget to call the gifDao.save() it is already coded to saveOrUpdate so just go ahead
+     * */
+    @Override
+    public void toggleFavorite(Gif gif) {
+        gif.setFavorite(!gif.isFavorite());
+        gifDao.save(gif);
     }
 }
