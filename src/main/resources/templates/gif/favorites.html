@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- PATCH: CHANGING FAVORITE UNACTIVE LINK TO BUTTON TO UN FAVORITE-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: head('favorites')"></head>
 <body>
 <div th:replace="layout :: nav"></div>
@@ -18,9 +19,11 @@
     <div class="divider"></div>
     <div class="row">
         <div th:each="gif : ${gifs}" class="col s12 l4">
-            <a th:href="@{|/gifs/${gif.id}|}">
+            <a th:href="@{|/gifs/${gif.id}|}" class="actions">
                 <img th:src="@{|/gifs/${gif.id}.gif|}" />
-                <a href="#" th:class="(${gif.favorite}? 'un' : '') + 'mark favorite'"></a>
+                <form th:action="@{|/gifs/${gif.id}/favorite|}" method="post">
+                    <button type="submit" th:class="(${gif.favorite}? 'un' : '') + 'mark favorite'"></button>
+                </form>
             </a>
         </div>
     </div>
