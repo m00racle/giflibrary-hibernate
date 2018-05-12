@@ -1,6 +1,7 @@
 package com.mooracle.giflibh2.web.controller;
 
 import com.mooracle.giflibh2.model.Category;
+import com.mooracle.giflibh2.service.CategoryNotEmptyException;
 import com.mooracle.giflibh2.service.CategoryService;
 import com.mooracle.giflibh2.web.Color;
 import com.mooracle.giflibh2.web.FlashMessage;
@@ -183,7 +184,8 @@ import java.util.List;
  *  ENTRY 57: DELETING CATEGORIES
  *  GOTO: deleteCategory method
  *
- *
+ *  ENTRY 62: Custom Exception in the Service Layer
+ *  GOTO: deleteCategory method
  *  */
 @Controller
 public class CategoryController {
@@ -316,14 +318,15 @@ public class CategoryController {
      * */
     @RequestMapping(value = "/categories/{categoryId}/delete", method = RequestMethod.POST)
     public String deleteCategory(@PathVariable Long categoryId, RedirectAttributes redirectAttributes) {
-        Category cat = categoryService.findById(categoryId);//<-- why don't use Category category?
-        if(cat.getGifs().size()>0){
+        // 57; 62: Delete category if it contains no GIFs (Patched for forget to add attributeName)
+        try {
+            Category cat = categoryService.findById(categoryId);
+            categoryService.delete(cat);
+        } catch (CategoryNotEmptyException e) {
             redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category is not empty, Unable to delete",
                     FlashMessage.Status.FAILURE));
             return String.format("redirect:/categories/%s/edit", categoryId);
         }
-        // 57: Delete category if it contains no GIFs (Patched for forget to add attributeName)
-        categoryService.delete(cat);
         redirectAttributes.addFlashAttribute("flash", new FlashMessage("Category deleted!",
                 FlashMessage.Status.SUCCESS));//<--add flash message that category has been deleted
 
